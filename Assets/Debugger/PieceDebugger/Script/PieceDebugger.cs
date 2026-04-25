@@ -63,9 +63,9 @@ public class PieceDebugger : MonoBehaviour
         // --- position ---
         result += "Positions:\n";
 
-        if (move.positon != null && move.positon.Length > 0)
+        if (move.position != null && move.position.Length > 0)
         {
-            foreach (var p in move.positon)
+            foreach (var p in move.position)
             {
                 result += $"  (x:{p.x}, y:{p.y})\n";
             }

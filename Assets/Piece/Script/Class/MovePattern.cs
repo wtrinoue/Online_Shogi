@@ -4,5 +4,5 @@ using UnityEngine;
 public class MovePattern
 {
     public Vector2Int[] direction;
-    public Vector2Int[] positon;
+    public Vector2Int[] position;
 }

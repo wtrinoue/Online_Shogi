@@ -12,13 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d09e9c7a94416c549863dd9ed27a334a, type: 3}
   m_Name: GoteGin
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
-  team: 0
-  type: 0
-  normalSprite: {fileID: 0}
-  promotedSprite: {fileID: 0}
+  team: 1
+  type: 1
+  normalSprite: {fileID: -3054068262431949301, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
+  promotedSprite: {fileID: -3290464760569710641, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   normalMove:
     direction: []
-    positon: []
+    positon:
+    - {x: -1, y: 1}
+    - {x: 1, y: 1}
+    - {x: -1, y: -1}
+    - {x: 0, y: -1}
+    - {x: 1, y: -1}
   promotedMove:
     direction: []
-    positon: []
+    positon:
+    - {x: 0, y: 1}
+    - {x: -1, y: 0}
+    - {x: 1, y: 0}
+    - {x: -1, y: -1}
+    - {x: 0, y: -1}
+    - {x: 1, y: -1}
