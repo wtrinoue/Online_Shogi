@@ -19,11 +19,12 @@ public enum Team
 public enum PieceType
 {
     Fu,      // 歩
-    Kyo,     // 香
-    Kei,     // 桂
     Gin,     // 銀
-    Kin,     // 金
-    Kaku,    // 角
     Hisha,   // 飛
+    Kaku,    // 角
+    Kei,     // 桂
+    Kin,     // 金
+    Kyo,     // 香
+
     Ou       // 王（またはGyokuでもOK）
 }
