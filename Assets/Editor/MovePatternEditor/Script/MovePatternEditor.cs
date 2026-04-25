@@ -115,7 +115,7 @@ public class MovePatternDrawer : PropertyDrawer
         grid = new CellState[SIZE, SIZE];
 
         var dir = property.FindPropertyRelative("direction");
-        var pos = property.FindPropertyRelative("positon");
+        var pos = property.FindPropertyRelative("position");
 
         // direction → Arrow（y±2は無視）
         for (int i = 0; i < dir.arraySize; i++)
@@ -152,7 +152,7 @@ public class MovePatternDrawer : PropertyDrawer
     private void Apply(SerializedProperty property)
     {
         var dir = property.FindPropertyRelative("direction");
-        var pos = property.FindPropertyRelative("positon");
+        var pos = property.FindPropertyRelative("position");
 
         List<Vector2Int> directions = new List<Vector2Int>();
         List<Vector2Int> positions = new List<Vector2Int>();

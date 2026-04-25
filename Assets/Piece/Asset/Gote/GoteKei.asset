@@ -12,13 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d09e9c7a94416c549863dd9ed27a334a, type: 3}
   m_Name: GoteKei
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
-  team: 0
-  type: 0
-  normalSprite: {fileID: 0}
-  promotedSprite: {fileID: 0}
+  team: 1
+  type: 4
+  normalSprite: {fileID: 670039704997269070, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
+  promotedSprite: {fileID: 5523575952069111539, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   normalMove:
     direction: []
-    positon: []
+    positon:
+    - {x: -1, y: -2}
+    - {x: 1, y: -2}
   promotedMove:
     direction: []
-    positon: []
+    positon:
+    - {x: 0, y: 1}
+    - {x: -1, y: 0}
+    - {x: 1, y: 0}
+    - {x: -1, y: -1}
+    - {x: 0, y: -1}
+    - {x: 1, y: -1}
