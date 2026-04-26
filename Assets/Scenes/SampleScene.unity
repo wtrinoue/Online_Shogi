@@ -242,9 +242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameViewer
   pieceViewPrefab: {fileID: 2053916190144059764, guid: d660df8bd12da05419dd1c1d60a96c7a, type: 3}
   cellViewPrefab: {fileID: 6959584966469374499, guid: d6f348e5c5f43854ab2eaa4ed12a4f2e, type: 3}
-  boardStartPos: {x: -5, y: -5, z: 0}
-  senteHnadStartPos: {x: -10, y: -5, z: 0}
-  goteHandStartPos: {x: 10, y: -5, z: 0}
+  boardConfig: {fileID: 11400000, guid: 3b5f2184557465846ac18fe0a1ab3776, type: 2}
 --- !u!4 &965882716
 Transform:
   m_ObjectHideFlags: 0
