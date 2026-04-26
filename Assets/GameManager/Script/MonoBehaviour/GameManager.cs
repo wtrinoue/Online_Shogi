@@ -126,6 +126,55 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void DebugPrintPieceBoard()
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        sb.AppendLine("=== Piece Board ===");
+
+        for (int y = 8; y >= 0; y--)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                Piece piece = pieceBoard[x, y];
+
+                // Piece自体がnull
+                if (piece == null)
+                {
+                    sb.Append(" ・ ");
+                    continue;
+                }
+
+                // dataがnull
+                if (piece.data == null)
+                {
+                    sb.Append(" ?? ");
+                    continue;
+                }
+
+                // team/typeが正常な場合
+                string team = piece.data.team == Team.Sente ? "先" : "後";
+                string type = piece.data.type.ToString().Substring(0, 1);
+
+                sb.Append($"{team}{type}");
+
+                if (piece.isPromoted)
+                    sb.Append("*");
+                else
+                    sb.Append(" ");
+            }
+
+            sb.AppendLine();
+        }
+
+        Debug.Log(sb.ToString());
+    }
+
+    public Piece[,] GetPieceBoard()
+    {
+        return pieceBoard;
+    }
+
     // -------------------------
     // セル管理
     // -------------------------
@@ -210,48 +259,10 @@ public class GameManager : MonoBehaviour
         return pos.x >= 0 && pos.x < 9 &&
                pos.y >= 0 && pos.y < 9;
     }
-    public void DebugPrintPieceBoard()
+
+    public Cell[,] GetCellBoard()
     {
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-        sb.AppendLine("=== Piece Board ===");
-
-        for (int y = 8; y >= 0; y--)
-        {
-            for (int x = 0; x < 9; x++)
-            {
-                Piece piece = pieceBoard[x, y];
-
-                // Piece自体がnull
-                if (piece == null)
-                {
-                    sb.Append(" ・ ");
-                    continue;
-                }
-
-                // dataがnull
-                if (piece.data == null)
-                {
-                    sb.Append(" ?? ");
-                    continue;
-                }
-
-                // team/typeが正常な場合
-                string team = piece.data.team == Team.Sente ? "先" : "後";
-                string type = piece.data.type.ToString().Substring(0, 1);
-
-                sb.Append($"{team}{type}");
-
-                if (piece.isPromoted)
-                    sb.Append("*");
-                else
-                    sb.Append(" ");
-            }
-
-            sb.AppendLine();
-        }
-
-        Debug.Log(sb.ToString());
+        return cellBoard;
     }
 
     public void DebugPrintCellBoard()
