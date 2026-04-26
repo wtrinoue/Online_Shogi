@@ -4,27 +4,28 @@ public class CellView : MonoBehaviour
 {
     public SpriteRenderer sr;
     public Cell cell;
+    public CellColor cellColor;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void SetCell(Cell c)
+    public void SetCell(Cell c)
     {
         cell = c;
     }
 
     // Update is called once per frame
-    void UpdateView()
+    public void UpdateView()
     {
         switch (cell.state)
         {
             case CellState.Normal:
-                sr.color = cell.color.normalColor;
+                sr.color = cellColor.normalColor;
                 break;
 
             case CellState.Selected:
-                sr.color = cell.color.selectedColor;
+                sr.color = cellColor.selectedColor;
                 break;
 
             case CellState.Placeable:
-                sr.color = cell.color.placeableColor;
+                sr.color = cellColor.placeableColor;
                 break;
         }
     }

@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
         InitializeCell();
         DebugPrintCellBoard();
         DebugPrintPieceBoard();
+        TestAddToHand();
+        ChangeCellsByPiece(new Vector2Int(4,2));
     }
 
     // -------------------------
@@ -113,7 +115,9 @@ public class GameManager : MonoBehaviour
     {
         Piece piece = pieceBoard[pos.x, pos.y];
         if (piece == null) return;
-
+        Debug.Log("AddToHand発動");
+        Debug.Log(piece.data.team);
+        Debug.Log(piece.data.type);
         if (piece.data.team == Team.Sente)
         {
             Piece goteHandPiece = pieceFactory.GetPiece(Team.Gote, piece.data.type, false, true);
@@ -123,6 +127,15 @@ public class GameManager : MonoBehaviour
         {
             Piece senteHandPiece = pieceFactory.GetPiece(Team.Sente, piece.data.type, false, true);
             senteHandPieces.Add(senteHandPiece);
+        }
+    }
+
+    public void TestAddToHand()
+    {
+        for(int x = 0; x < 9; x++)
+        {
+            AddToHand(new Vector2Int(x,0));
+            AddToHand(new Vector2Int(x,8));
         }
     }
 

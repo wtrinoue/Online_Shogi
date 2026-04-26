@@ -14,122 +14,122 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BoardSetup
   placements:
   - x: 0
-    y: 2
-    pieceData: {fileID: 0}
+    y: 6
+    pieceData: {fileID: 11400000, guid: d0eb0f956a756b844931ed57745d708c, type: 2}
   - x: 1
-    y: 2
-    pieceData: {fileID: 0}
+    y: 6
+    pieceData: {fileID: 11400000, guid: d0eb0f956a756b844931ed57745d708c, type: 2}
   - x: 2
-    y: 2
-    pieceData: {fileID: 0}
+    y: 6
+    pieceData: {fileID: 11400000, guid: d0eb0f956a756b844931ed57745d708c, type: 2}
   - x: 3
-    y: 2
-    pieceData: {fileID: 0}
+    y: 6
+    pieceData: {fileID: 11400000, guid: d0eb0f956a756b844931ed57745d708c, type: 2}
   - x: 4
-    y: 2
-    pieceData: {fileID: 0}
+    y: 6
+    pieceData: {fileID: 11400000, guid: d0eb0f956a756b844931ed57745d708c, type: 2}
   - x: 5
-    y: 2
-    pieceData: {fileID: 0}
+    y: 6
+    pieceData: {fileID: 11400000, guid: d0eb0f956a756b844931ed57745d708c, type: 2}
   - x: 6
-    y: 2
-    pieceData: {fileID: 0}
+    y: 6
+    pieceData: {fileID: 11400000, guid: d0eb0f956a756b844931ed57745d708c, type: 2}
   - x: 7
-    y: 2
-    pieceData: {fileID: 0}
+    y: 6
+    pieceData: {fileID: 11400000, guid: d0eb0f956a756b844931ed57745d708c, type: 2}
   - x: 8
-    y: 2
-    pieceData: {fileID: 0}
-  - x: 1
-    y: 1
-    pieceData: {fileID: 0}
-  - x: 7
-    y: 1
-    pieceData: {fileID: 0}
+    y: 6
+    pieceData: {fileID: 11400000, guid: d0eb0f956a756b844931ed57745d708c, type: 2}
   - x: 0
-    y: 0
-    pieceData: {fileID: 0}
+    y: 2
+    pieceData: {fileID: 11400000, guid: 8b28e02d54741784082c26cb3bd2582e, type: 2}
   - x: 1
-    y: 0
-    pieceData: {fileID: 0}
+    y: 2
+    pieceData: {fileID: 11400000, guid: 8b28e02d54741784082c26cb3bd2582e, type: 2}
   - x: 2
-    y: 0
-    pieceData: {fileID: 0}
+    y: 2
+    pieceData: {fileID: 11400000, guid: 8b28e02d54741784082c26cb3bd2582e, type: 2}
   - x: 3
-    y: 0
-    pieceData: {fileID: 0}
+    y: 2
+    pieceData: {fileID: 11400000, guid: 8b28e02d54741784082c26cb3bd2582e, type: 2}
   - x: 4
-    y: 0
-    pieceData: {fileID: 0}
+    y: 2
+    pieceData: {fileID: 11400000, guid: 8b28e02d54741784082c26cb3bd2582e, type: 2}
   - x: 5
-    y: 0
-    pieceData: {fileID: 0}
+    y: 2
+    pieceData: {fileID: 11400000, guid: 8b28e02d54741784082c26cb3bd2582e, type: 2}
   - x: 6
-    y: 0
-    pieceData: {fileID: 0}
+    y: 2
+    pieceData: {fileID: 11400000, guid: 8b28e02d54741784082c26cb3bd2582e, type: 2}
   - x: 7
-    y: 0
-    pieceData: {fileID: 0}
+    y: 2
+    pieceData: {fileID: 11400000, guid: 8b28e02d54741784082c26cb3bd2582e, type: 2}
   - x: 8
-    y: 0
-    pieceData: {fileID: 0}
-  - x: 0
-    y: 6
-    pieceData: {fileID: 0}
-  - x: 1
-    y: 6
-    pieceData: {fileID: 0}
-  - x: 2
-    y: 6
-    pieceData: {fileID: 0}
-  - x: 3
-    y: 6
-    pieceData: {fileID: 0}
-  - x: 4
-    y: 6
-    pieceData: {fileID: 0}
-  - x: 5
-    y: 6
-    pieceData: {fileID: 0}
-  - x: 6
-    y: 6
-    pieceData: {fileID: 0}
-  - x: 7
-    y: 6
-    pieceData: {fileID: 0}
-  - x: 8
-    y: 6
-    pieceData: {fileID: 0}
+    y: 2
+    pieceData: {fileID: 11400000, guid: 8b28e02d54741784082c26cb3bd2582e, type: 2}
   - x: 1
     y: 7
-    pieceData: {fileID: 0}
+    pieceData: {fileID: 11400000, guid: 170cdefa8ce39fd42b23b367f6cbb8d1, type: 2}
   - x: 7
     y: 7
-    pieceData: {fileID: 0}
+    pieceData: {fileID: 11400000, guid: 4625231cac90b1e4cb8e5d286e515691, type: 2}
   - x: 0
     y: 8
-    pieceData: {fileID: 0}
+    pieceData: {fileID: 11400000, guid: 99803dba14271884fbdf059eaa3304d4, type: 2}
   - x: 8
     y: 8
-    pieceData: {fileID: 0}
+    pieceData: {fileID: 11400000, guid: 99803dba14271884fbdf059eaa3304d4, type: 2}
   - x: 1
     y: 8
-    pieceData: {fileID: 0}
+    pieceData: {fileID: 11400000, guid: d8f6a66e4528c2945a965d2af0d239d1, type: 2}
   - x: 7
     y: 8
-    pieceData: {fileID: 0}
+    pieceData: {fileID: 11400000, guid: d8f6a66e4528c2945a965d2af0d239d1, type: 2}
   - x: 2
     y: 8
-    pieceData: {fileID: 0}
+    pieceData: {fileID: 11400000, guid: 93cc05d9215a69c4ca0fd1cfbfcf4c5f, type: 2}
   - x: 6
     y: 8
-    pieceData: {fileID: 0}
+    pieceData: {fileID: 11400000, guid: 93cc05d9215a69c4ca0fd1cfbfcf4c5f, type: 2}
   - x: 3
     y: 8
-    pieceData: {fileID: 0}
+    pieceData: {fileID: 11400000, guid: ba8496369e40a8f42b9b84f1ad1752e8, type: 2}
   - x: 5
     y: 8
-    pieceData: {fileID: 0}
+    pieceData: {fileID: 11400000, guid: ba8496369e40a8f42b9b84f1ad1752e8, type: 2}
   - x: 4
     y: 8
-    pieceData: {fileID: 0}
+    pieceData: {fileID: 11400000, guid: 0da6a5eb60d2da949b650ffda47b6f23, type: 2}
+  - x: 1
+    y: 1
+    pieceData: {fileID: 11400000, guid: 2f713bd67b2dfb84990a1b94b54fddfc, type: 2}
+  - x: 7
+    y: 1
+    pieceData: {fileID: 11400000, guid: 02dd9c5757df5a74c82b17bbd8532056, type: 2}
+  - x: 0
+    y: 0
+    pieceData: {fileID: 11400000, guid: a8e0b696d352ec6469b0161e44673866, type: 2}
+  - x: 8
+    y: 0
+    pieceData: {fileID: 11400000, guid: a8e0b696d352ec6469b0161e44673866, type: 2}
+  - x: 1
+    y: 0
+    pieceData: {fileID: 11400000, guid: 9f58869f1e68ac54590ca6f6004c8941, type: 2}
+  - x: 7
+    y: 0
+    pieceData: {fileID: 11400000, guid: 9f58869f1e68ac54590ca6f6004c8941, type: 2}
+  - x: 2
+    y: 0
+    pieceData: {fileID: 11400000, guid: b88b7f94667103a46ae86c0a47506f5b, type: 2}
+  - x: 6
+    y: 0
+    pieceData: {fileID: 11400000, guid: b88b7f94667103a46ae86c0a47506f5b, type: 2}
+  - x: 3
+    y: 0
+    pieceData: {fileID: 11400000, guid: b82e3a3b8d9c649428cc4cdafc9a93e2, type: 2}
+  - x: 5
+    y: 0
+    pieceData: {fileID: 11400000, guid: b82e3a3b8d9c649428cc4cdafc9a93e2, type: 2}
+  - x: 4
+    y: 0
+    pieceData: {fileID: 11400000, guid: abb60094a2c032b4b93e6024b22aa658, type: 2}
