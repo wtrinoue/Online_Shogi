@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        Debug.Log("Awake called");
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -25,6 +26,8 @@ public class GameManager : MonoBehaviour
         Instance = this;
         InitializePiece();
         InitializeCell();
+        DebugPrintCellBoard();
+        DebugPrintPieceBoard();
     }
 
     // -------------------------
@@ -204,5 +207,88 @@ public class GameManager : MonoBehaviour
     {
         return pos.x >= 0 && pos.x < 9 &&
                pos.y >= 0 && pos.y < 9;
+    }
+    public void DebugPrintPieceBoard()
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        sb.AppendLine("=== Piece Board ===");
+
+        for (int y = 8; y >= 0; y--)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                Piece piece = pieceBoard[x, y];
+
+                // Piece自体がnull
+                if (piece == null)
+                {
+                    sb.Append(" ・ ");
+                    continue;
+                }
+
+                // dataがnull
+                if (piece.data == null)
+                {
+                    sb.Append(" ?? ");
+                    continue;
+                }
+
+                // team/typeが正常な場合
+                string team = piece.data.team == Team.Sente ? "先" : "後";
+                string type = piece.data.type.ToString().Substring(0, 1);
+
+                sb.Append($"{team}{type}");
+
+                if (piece.isPromoted)
+                    sb.Append("*");
+                else
+                    sb.Append(" ");
+            }
+
+            sb.AppendLine();
+        }
+
+        Debug.Log(sb.ToString());
+    }
+
+    public void DebugPrintCellBoard()
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        sb.AppendLine("=== Cell Board ===");
+
+        for (int y = 8; y >= 0; y--)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                Cell cell = cellBoard[x, y];
+
+                if (cell == null)
+                {
+                    sb.Append(" ? ");
+                }
+                else
+                {
+                    switch (cell.state)
+                    {
+                        case CellState.Normal:
+                            sb.Append(" . ");
+                            break;
+
+                        case CellState.Selected:
+                            sb.Append(" S ");
+                            break;
+
+                        case CellState.Placeable:
+                            sb.Append(" P ");
+                            break;
+                    }
+                }
+            }
+            sb.AppendLine();
+        }
+
+        Debug.Log(sb.ToString());
     }
 }
