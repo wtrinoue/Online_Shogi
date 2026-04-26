@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class GameViewer : MonoBehaviour
 {
-    public GameViewer Instance;
+    public PieceView pieceViewPrefab;
+    public CellView cellViewPrefab;
+    private GameViewer Instance;
     private Piece[,] pieceBoard = new Piece[9,9];
     private Cell[,] cellBoard = new Cell[9,9];
     private List<Piece> senteHandPieces = new List<Piece>();
