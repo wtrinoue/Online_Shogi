@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a60d865f225828439f299272e8901a2, type: 3}
-  m_Name: CellStyle
+  m_Name: CellColor
   m_EditorClassIdentifier: Assembly-CSharp::CellStyle
-  normalColor: {r: 1, g: 0.9627636, b: 0.7122642, a: 0}
-  selectedColor: {r: 0.2865103, g: 1, b: 0.11792451, a: 0}
-  placeableColor: {r: 1, g: 0.32234797, b: 0.3160377, a: 0}
+  normalColor: {r: 1, g: 0.9627636, b: 0.7122642, a: 1}
+  selectedColor: {r: 0.2865103, g: 1, b: 0.11792451, a: 1}
+  placeableColor: {r: 1, g: 0.32234797, b: 0.3160377, a: 1}

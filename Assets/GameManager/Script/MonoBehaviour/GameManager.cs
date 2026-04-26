@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
         InitializeCell();
         DebugPrintCellBoard();
         DebugPrintPieceBoard();
+        TestAddToHand();
+        ChangeCellsByPiece(new Vector2Int(4,2));
     }
 
     // -------------------------
@@ -113,7 +115,9 @@ public class GameManager : MonoBehaviour
     {
         Piece piece = pieceBoard[pos.x, pos.y];
         if (piece == null) return;
-
+        Debug.Log("AddToHand発動");
+        Debug.Log(piece.data.team);
+        Debug.Log(piece.data.type);
         if (piece.data.team == Team.Sente)
         {
             Piece goteHandPiece = pieceFactory.GetPiece(Team.Gote, piece.data.type, false, true);
@@ -124,6 +128,59 @@ public class GameManager : MonoBehaviour
             Piece senteHandPiece = pieceFactory.GetPiece(Team.Sente, piece.data.type, false, true);
             senteHandPieces.Add(senteHandPiece);
         }
+    }
+
+    public void TestAddToHand()
+    {
+        for(int x = 0; x < 9; x++)
+        {
+            AddToHand(new Vector2Int(x,0));
+            AddToHand(new Vector2Int(x,8));
+        }
+    }
+
+    public void DebugPrintPieceBoard()
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        sb.AppendLine("=== Piece Board ===");
+
+        for (int y = 8; y >= 0; y--)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                Piece piece = pieceBoard[x, y];
+
+                // Piece自体がnull
+                if (piece == null)
+                {
+                    sb.Append(" ・ ");
+                    continue;
+                }
+
+                // dataがnull
+                if (piece.data == null)
+                {
+                    sb.Append(" ?? ");
+                    continue;
+                }
+
+                // team/typeが正常な場合
+                string team = piece.data.team == Team.Sente ? "先" : "後";
+                string type = piece.data.type.ToString().Substring(0, 1);
+
+                sb.Append($"{team}{type}");
+
+                if (piece.isPromoted)
+                    sb.Append("*");
+                else
+                    sb.Append(" ");
+            }
+
+            sb.AppendLine();
+        }
+
+        Debug.Log(sb.ToString());
     }
 
     // -------------------------
@@ -210,49 +267,6 @@ public class GameManager : MonoBehaviour
         return pos.x >= 0 && pos.x < 9 &&
                pos.y >= 0 && pos.y < 9;
     }
-    public void DebugPrintPieceBoard()
-    {
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-        sb.AppendLine("=== Piece Board ===");
-
-        for (int y = 8; y >= 0; y--)
-        {
-            for (int x = 0; x < 9; x++)
-            {
-                Piece piece = pieceBoard[x, y];
-
-                // Piece自体がnull
-                if (piece == null)
-                {
-                    sb.Append(" ・ ");
-                    continue;
-                }
-
-                // dataがnull
-                if (piece.data == null)
-                {
-                    sb.Append(" ?? ");
-                    continue;
-                }
-
-                // team/typeが正常な場合
-                string team = piece.data.team == Team.Sente ? "先" : "後";
-                string type = piece.data.type.ToString().Substring(0, 1);
-
-                sb.Append($"{team}{type}");
-
-                if (piece.isPromoted)
-                    sb.Append("*");
-                else
-                    sb.Append(" ");
-            }
-
-            sb.AppendLine();
-        }
-
-        Debug.Log(sb.ToString());
-    }
 
     public void DebugPrintCellBoard()
     {
@@ -292,5 +306,23 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log(sb.ToString());
+    }
+
+    public Piece[,] GetPieceBoard()
+    {
+        return pieceBoard;
+    }
+    public Cell[,] GetCellBoard()
+    {
+        return cellBoard;
+    }
+    public List<Piece> GetSenteHandPieces()
+    {
+        return senteHandPieces;
+    }
+
+    public List<Piece> GetGoteHandPieces()
+    {
+        return goteHandPieces;
     }
 }

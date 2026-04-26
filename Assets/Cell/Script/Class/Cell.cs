@@ -3,19 +3,16 @@ using UnityEngine;
 public class Cell
 {
     public CellState state;
-    public CellColor color;
     // コンストラクタ
-    public Cell(CellState state, CellColor color)
+    public Cell(CellState state)
     {
         this.state = state;
-        this.color = color;
     }
 
     // デフォルトコンストラクタ（必要なら）
     public Cell()
     {
         state = CellState.Normal;
-        color = null;
     }
 
     public void SetNormal()
