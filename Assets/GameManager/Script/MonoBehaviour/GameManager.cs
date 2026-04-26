@@ -170,11 +170,6 @@ public class GameManager : MonoBehaviour
         Debug.Log(sb.ToString());
     }
 
-    public Piece[,] GetPieceBoard()
-    {
-        return pieceBoard;
-    }
-
     // -------------------------
     // セル管理
     // -------------------------
@@ -260,11 +255,6 @@ public class GameManager : MonoBehaviour
                pos.y >= 0 && pos.y < 9;
     }
 
-    public Cell[,] GetCellBoard()
-    {
-        return cellBoard;
-    }
-
     public void DebugPrintCellBoard()
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -303,5 +293,23 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log(sb.ToString());
+    }
+
+    public Piece[,] GetPieceBoard()
+    {
+        return pieceBoard;
+    }
+    public Cell[,] GetCellBoard()
+    {
+        return cellBoard;
+    }
+    public List<Piece> GetSenteHandPieces()
+    {
+        return senteHandPieces;
+    }
+
+    public List<Piece> GetGoteHandPieces()
+    {
+        return goteHandPieces;
     }
 }
