@@ -116,11 +116,13 @@ public class GameManager : MonoBehaviour
 
         if (piece.data.team == Team.Sente)
         {
-            goteHandPieces.Add(new Piece(piece.data, false, true));
+            Piece goteHandPiece = pieceFactory.GetPiece(Team.Gote, piece.data.type, false, true);
+            goteHandPieces.Add(goteHandPiece);
         }
         else
         {
-            senteHandPieces.Add(new Piece(piece.data, false, true));
+            Piece senteHandPiece = pieceFactory.GetPiece(Team.Sente, piece.data.type, false, true);
+            senteHandPieces.Add(senteHandPiece);
         }
     }
 
