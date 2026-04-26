@@ -5,14 +5,15 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public List<PiecePlacement> piecePlacementList;
-
+    public BoardSetup boardSetup;
+    public PieceFactory pieceFactory;
     // ★ ここを配列に変更
     public Piece[,] pieceBoard = new Piece[9, 9];
     public Cell[,] cellBoard = new Cell[9, 9];
 
     public List<Piece> senteHandPieces = new List<Piece>();
     public List<Piece> goteHandPieces = new List<Piece>();
+
 
     void Awake()
     {
@@ -22,6 +23,8 @@ public class GameManager : MonoBehaviour
             return;
         }
         Instance = this;
+        InitializePiece();
+        InitializeCell();
     }
 
     // -------------------------
@@ -29,7 +32,7 @@ public class GameManager : MonoBehaviour
     // -------------------------
     public void InitializePiece()
     {
-        foreach (var piecePlacement in piecePlacementList)
+        foreach (var piecePlacement in boardSetup.placements)
         {
             int x = piecePlacement.x;
             int y = piecePlacement.y;
