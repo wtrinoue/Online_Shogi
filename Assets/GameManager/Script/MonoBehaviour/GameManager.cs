@@ -199,15 +199,48 @@ public class GameManager : MonoBehaviour
 
     public void ChangeCellsByPiece(Vector2Int pos)
     {
+        List<Vector2Int> checkPoints = new List<Vector2Int>();
+        // checkPoints = GetMovablePositions(pos);
+        checkPoints = GetMovablePositions(pos);
+        // -------------------------
+        // セル反映
+        // -------------------------
+        foreach (var vec in checkPoints)
+        {
+            cellBoard[vec.x, vec.y].SetPlaceable();
+        }
+        if(pieceBoard[pos.x, pos.y] == null) return;
+        cellBoard[pos.x, pos.y].SetSelected();
+    }
+    public List<Vector2Int> GetEmptyPositions()
+    {
+        List<Vector2Int> result = new List<Vector2Int>();
+
+        for (int y = 0; y < 9; y++)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                if (pieceBoard[x, y] == null)
+                {
+                    result.Add(new Vector2Int(x, y));
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public List<Vector2Int> GetMovablePositions(Vector2Int pos)
+    {
         Piece piece = pieceBoard[pos.x, pos.y];
-        if (piece == null) return;
+        if (piece == null) return new List<Vector2Int>();
 
         MovePattern movePattern = piece.GetMovePattern();
 
         Vector2Int[] direction = movePattern.direction;
         Vector2Int[] position = movePattern.position;
 
-        List<Vector2Int> checkPoints = new List<Vector2Int>();
+        List<Vector2Int> result = new List<Vector2Int>();
 
         // -------------------------
         // 方向（伸びる移動）
@@ -224,11 +257,11 @@ public class GameManager : MonoBehaviour
                 // 駒があるなら止める
                 if (pieceBoard[target.x, target.y] != null)
                 {
-                    // checkPoints.Add(target);
+                    // ★必要なら「取れる」処理をここに入れる
                     break;
                 }
 
-                checkPoints.Add(target);
+                result.Add(target);
             }
         }
 
@@ -243,20 +276,12 @@ public class GameManager : MonoBehaviour
             {
                 if (pieceBoard[target.x, target.y] == null)
                 {
-                    checkPoints.Add(target);
+                    result.Add(target);
                 }
             }
         }
 
-        // -------------------------
-        // セル反映
-        // -------------------------
-        foreach (var vec in checkPoints)
-        {
-            cellBoard[vec.x, vec.y].SetPlaceable();
-        }
-
-        cellBoard[pos.x, pos.y].SetSelected();
+        return result;
     }
 
     // -------------------------
