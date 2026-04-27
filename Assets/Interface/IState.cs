@@ -4,5 +4,5 @@ public interface IState
 {
     void Enter();
     void Exit();
-    void OnClick(Vector2 pos);
+    IState OnClick(Vector2 pos);
 }
