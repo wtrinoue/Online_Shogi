@@ -16,6 +16,8 @@ public class TextManager : MonoBehaviour
             return;
         }
         Instance = this;
+        Show("実験");
+        Hide();
     }
 
     public void Show(string message)
