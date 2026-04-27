@@ -28,8 +28,8 @@ public class GameManager : MonoBehaviour
         InitializeCell();
         DebugPrintCellBoard();
         DebugPrintPieceBoard();
-        TestAddToHand();
-        ChangeCellsByPiece(new Vector2Int(4,2));
+        // TestAddToHand();
+        // ChangeCellsByPiece(new Vector2Int(4,2));
     }
 
     // -------------------------

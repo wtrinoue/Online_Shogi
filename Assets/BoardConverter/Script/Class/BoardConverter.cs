@@ -2,30 +2,34 @@ using UnityEngine;
 
 public static class BoardConverter
 {
+    private static Vector3 boardOffset = new Vector3(-4, -3, 0);
+    private static Vector3 senteHandOffset = new Vector3(-10, -3, 0);
+    private static Vector3 goteHandOffset = new Vector3(10, -3, 0);
+    private static float cellSize = 1f;
     // -------------------------
     // 盤面用
     // -------------------------
-    public static bool WorldToBoard(Vector3 worldPos, BoardConfig config, out Vector2Int boardPos)
+    public static bool WorldToBoard(Vector3 worldPos, out Vector2Int boardPos)
     {
-        boardPos = WorldToGrid(worldPos, config.boardOffset, config.cellSize);
+        boardPos = WorldToGrid(worldPos, boardOffset, cellSize);
         return IsInsideBoard(boardPos);
     }
 
     // -------------------------
     // 先手持ち駒用
     // -------------------------
-    public static bool WorldToSenteHand(Vector3 worldPos, BoardConfig config, out Vector2Int pos)
+    public static bool WorldToSenteHand(Vector3 worldPos, out Vector2Int pos)
     {
-        pos = WorldToGrid(worldPos, config.senteHandOffset, config.cellSize);
+        pos = WorldToGrid(worldPos, senteHandOffset, cellSize);
         return IsInsideHand(pos);
     }
 
     // -------------------------
     // 後手持ち駒用
     // -------------------------
-    public static bool WorldToGoteHand(Vector3 worldPos, BoardConfig config, out Vector2Int pos)
+    public static bool WorldToGoteHand(Vector3 worldPos, out Vector2Int pos)
     {
-        pos = WorldToGrid(worldPos, config.goteHandOffset, config.cellSize);
+        pos = WorldToGrid(worldPos, goteHandOffset, cellSize);
         return IsInsideHand(pos);
     }
 
