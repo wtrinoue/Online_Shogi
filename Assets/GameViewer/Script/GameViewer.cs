@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class GameViewer : MonoBehaviour
 {
+    public static GameViewer Instance;
     public PieceView pieceViewPrefab;
     public CellView cellViewPrefab;
     public BoardConfig boardConfig;
     private Vector3 boardStartPos = new Vector3(0f, 0f, 0f);
     private Vector3 senteHnadStartPos = new Vector3(0f, 0f, 0f);
     private Vector3 goteHandStartPos = new Vector3(0f, 0f, 0f);
-    private static GameViewer Instance;
     private Piece[,] pieceBoard = new Piece[9,9];
     private Cell[,] cellBoard = new Cell[9,9];
     private List<Piece> senteHandPieces = new List<Piece>();

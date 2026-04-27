@@ -224,7 +224,7 @@ public class GameManager : MonoBehaviour
                 // 駒があるなら止める
                 if (pieceBoard[target.x, target.y] != null)
                 {
-                    checkPoints.Add(target);
+                    // checkPoints.Add(target);
                     break;
                 }
 

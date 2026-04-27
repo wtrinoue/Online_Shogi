@@ -2,7 +2,7 @@ using UnityEngine;
 
 public static class BoardConverter
 {
-    private static Vector3 boardOffset = new Vector3(-4, -3, 0);
+    private static Vector3 boardOffset = new Vector3(5, -3, 0);
     private static Vector3 senteHandOffset = new Vector3(-10, -3, 0);
     private static Vector3 goteHandOffset = new Vector3(10, -3, 0);
     private static float cellSize = 1f;
@@ -38,8 +38,8 @@ public static class BoardConverter
     // -------------------------
     private static Vector2Int WorldToGrid(Vector3 worldPos, Vector3 offset, float cellSize)
     {
-        float x = (worldPos.x - offset.x) / cellSize;
-        float y = (worldPos.y - offset.y) / cellSize;
+        float x = (worldPos.x - offset.x + cellSize/2) / cellSize;
+        float y = (worldPos.y - offset.y + cellSize/2) / cellSize;
 
         int ix = Mathf.FloorToInt(x);
         int iy = Mathf.FloorToInt(y);
