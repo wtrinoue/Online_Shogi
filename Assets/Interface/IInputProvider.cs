@@ -1,6 +1,7 @@
 using UnityEngine;
+using System;
 
 public interface IInputProvider
 {
-    event Action<Vector2> OnClick;
+    event Action<Vector2> OnClickEvent;
 }
