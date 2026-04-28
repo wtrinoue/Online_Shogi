@@ -6,7 +6,7 @@ public class StateMachine : MonoBehaviour
     [SerializeField] private BoardConfig boardConfig;
 
     private IInputProvider inputAdapter;
-    private IState currentState = new TestState();
+    private IState currentState = new IdleState();
 
     void Awake()
     {
