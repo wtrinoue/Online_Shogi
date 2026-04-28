@@ -5,10 +5,12 @@ public class IdleState : IState
     public void Enter()
     {
         Debug.Log("IdleStateに入りました");
+        GameManager.Instance.ClearCells();
+        GameViewer.Instance.ReloadAllData();
+        GameViewer.Instance.BuildAll();
     }
     public void Exit(){}
     public IState OnClick(Vector2 pos){
-        Debug.Log("クリックされたよ");
-        return new TextState("SelectStateに移行",new SelectState());
+        return new TextState("駒を選んでください",new SelectState());
     }
 }

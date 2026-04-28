@@ -80,6 +80,7 @@ public class GameManager : MonoBehaviour
     // -------------------------
     public void PromotePiece(Vector2Int pos)
     {
+        Debug.Log("成りました！");
         pieceBoard[pos.x, pos.y].Promote();
     }
 
@@ -147,9 +148,8 @@ public class GameManager : MonoBehaviour
     // -------------------------
     // 持ち駒
     // -------------------------
-    public void AddToHand(Vector2Int pos)
+    public void AddToHand(Piece piece)
     {
-        Piece piece = pieceBoard[pos.x, pos.y];
         if (piece == null) return;
         if (piece.data.team == Team.Sente)
         {
@@ -167,8 +167,8 @@ public class GameManager : MonoBehaviour
     {
         for(int x = 0; x < 9; x++)
         {
-            AddToHand(new Vector2Int(x,0));
-            AddToHand(new Vector2Int(x,8));
+            AddToHand(pieceBoard[x, 0]);
+            AddToHand(pieceBoard[x, 8]);
         }
     }
 
@@ -254,19 +254,19 @@ public class GameManager : MonoBehaviour
                 Vector2Int targetPos = pos + vec * i;
 
                 if (!IsInsideBoard(targetPos))
-                    break;
+                    continue;
                 // 駒があるなら止める
                 Piece targetPiece = pieceBoard[targetPos.x, targetPos.y];
                 if (targetPiece != null)
                 {
                     if(targetPiece.data.team == piece.data.team)
                     {
-                        break;
+                        continue;
                     }
                     else
                     {
                         result.Add(targetPos);
-                        break;
+                        continue;
                     }
                 }
 
@@ -279,15 +279,25 @@ public class GameManager : MonoBehaviour
         // -------------------------
         foreach (var vec in position)
         {
-            Vector2Int target = pos + vec;
+            Vector2Int targetPos = pos + vec;
 
-            if (IsInsideBoard(target))
+            if (!IsInsideBoard(targetPos))
+                continue;
+            // 駒があるなら止める
+            Piece targetPiece = pieceBoard[targetPos.x, targetPos.y];
+            if (targetPiece != null)
             {
-                if (pieceBoard[target.x, target.y] == null)
+                if(targetPiece.data.team == piece.data.team)
                 {
-                    result.Add(target);
+                    continue;
+                }
+                else
+                {
+                    result.Add(targetPos);
+                    continue;
                 }
             }
+            result.Add(targetPos);
         }
 
         return result;
