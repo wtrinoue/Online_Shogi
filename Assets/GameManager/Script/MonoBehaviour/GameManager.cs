@@ -120,9 +120,9 @@ public class GameManager : MonoBehaviour
         return targetPiece;
     }
 
-    public Piece MovePieceFromSenteHand(int fromIndex, Vector2Int toPos)
+    public Piece MovePieceFromSenteHand(Vector2Int fromPos, Vector2Int toPos)
     {
-        Piece piece = senteHandPieces[fromIndex];
+        Piece piece = senteHandPieces[fromPos.x*10 + fromPos.y];
         if (piece == null) return null;
 
         Piece targetPiece = pieceBoard[toPos.x, toPos.y];
@@ -132,9 +132,9 @@ public class GameManager : MonoBehaviour
         return targetPiece;
     }
 
-    public Piece MovePieceFromGoteHand(int fromIndex, Vector2Int toPos)
+    public Piece MovePieceFromGoteHand(Vector2Int fromPos, Vector2Int toPos)
     {
-        Piece piece = goteHandPieces[fromIndex];
+        Piece piece = goteHandPieces[fromPos.x*10 + fromPos.y];
         if (piece == null) return null;
 
         Piece targetPiece = pieceBoard[toPos.x, toPos.y];
@@ -346,6 +346,11 @@ public class GameManager : MonoBehaviour
                pos.y >= 0 && pos.y < 9;
     }
 
+    public bool IsPlaceableOnBoard(Vector2Int pos)
+    {
+        return cellBoard[pos.x, pos.y].state == CellState.Placeable;
+    }
+
     public void DebugPrintCellBoard()
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -413,13 +418,15 @@ public class GameManager : MonoBehaviour
     public Piece GetSenteHandPiece(Vector2Int pos)
     {
         int index = pos.x*10 + pos.y;
-        if(index > senteHandPieces.Count) return null;
+        Debug.Log(index);
+        if(index >= senteHandPieces.Count) return null;
         return senteHandPieces[index];
     }
     public Piece GetGoteHandPiece(Vector2Int pos)
     {
         int index = pos.x*10 + pos.y;
-        if(index > goteHandPieces.Count) return null;
+        Debug.Log(index);
+        if(index >= goteHandPieces.Count) return null;
         return goteHandPieces[index];
     }
     // 以下GameViewer用
