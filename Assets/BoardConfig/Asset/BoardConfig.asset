@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a797953fdf130c4b9d42cdf45fbfbd5, type: 3}
   m_Name: BoardConfig
   m_EditorClassIdentifier: Assembly-CSharp::BoardConfig
-  boardOffset: {x: 0, y: -3, z: 0}
-  senteHandOffset: {x: -10, y: -3, z: 0}
-  goteHandOffset: {x: 10, y: -3, z: 0}
+  boardOffset: {x: -4, y: -4, z: 0}
+  senteHandOffset: {x: -10, y: -4.5, z: 0}
+  goteHandOffset: {x: 10, y: -4.5, z: 0}
   cellSize: 1
