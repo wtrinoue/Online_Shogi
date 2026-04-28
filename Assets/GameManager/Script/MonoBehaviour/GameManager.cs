@@ -1,6 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+GameManagerの責務について
+・将棋の駒を操作すること（ゲーム全体の制御はしない）
+・現状を把握するための情報を渡せること
+・StateMachineで将棋のルールがわかるような最小単位のメソッドをもつこと
+*/
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -12,7 +17,9 @@ public class GameManager : MonoBehaviour
     public Cell[,] cellBoard = new Cell[9, 9];
 
     public List<Piece> senteHandPieces = new List<Piece>();
+    public Cell[,] senteHandCells = new Cell[2, 10];
     public List<Piece> goteHandPieces = new List<Piece>();
+    public Cell[,] goteHandCells = new Cell[2, 10];
 
 
     void Awake()
@@ -28,10 +35,11 @@ public class GameManager : MonoBehaviour
         InitializeCell();
         DebugPrintCellBoard();
         DebugPrintPieceBoard();
-        // TestAddToHand();
-        // ChangeCellsByPiece(new Vector2Int(4,2));
     }
-
+    // -------------------------
+    // 取得
+    // -------------------------
+    // public Piece GetPiece(){}
     // -------------------------
     // 初期化
     // -------------------------
@@ -58,54 +66,83 @@ public class GameManager : MonoBehaviour
                 cellBoard[x, y] = new Cell();
             }
         }
+        for (int y = 0; y < 10; y++)
+        {
+            for(int x = 0; x < 2; x++)
+            {
+                senteHandCells[x, y] = new Cell();
+                goteHandCells[x, y] = new Cell();
+            }
+        }
     }
 
     // -------------------------
-    // 成り判定
+    // 成り
     // -------------------------
     public void PromotePiece(Vector2Int pos)
     {
-        Piece piece = pieceBoard[pos.x, pos.y];
-        if (piece == null) return;
+        pieceBoard[pos.x, pos.y].Promote();
+    }
 
-        if (piece.isPromoted) return;
+    public bool IsPromotable(Vector2Int pos)
+    {
+        Piece piece = pieceBoard[pos.x, pos.y];
+        
+        if (piece == null) return false;
+        if (piece.isHanded) return false;
 
         Team team = piece.data.team;
 
         if (team == Team.Sente)
         {
-            if (pos.y >= 6)
-                piece.Promote();
+            if (pos.y >= 6) return true;
         }
         else
         {
-            if (pos.y <= 2)
-                piece.Promote();
+            if (pos.y <= 2) return true;
         }
+
+        return false;
     }
 
     // -------------------------
     // 移動
     // -------------------------
-    public void MovePiece(Vector2Int fromPos, Vector2Int toPos)
+    public Piece MovePieceFromBoard(Vector2Int fromPos, Vector2Int toPos)
     {
         Piece piece = pieceBoard[fromPos.x, fromPos.y];
-        if (piece == null) return;
+        if (piece == null) return null;
 
         Piece targetPiece = pieceBoard[toPos.x, toPos.y];
-
-        if (targetPiece != null)
-        {
-            // 将来：持ち駒処理
-        }
 
         pieceBoard[toPos.x, toPos.y] = piece;
         pieceBoard[fromPos.x, fromPos.y] = null;
 
-        PromotePiece(toPos);
+        return targetPiece;
+    }
 
-        ClearCell();
-        ChangeCellsByPiece(toPos);
+    public Piece MovePieceFromSenteHand(int fromIndex, Vector2Int toPos)
+    {
+        Piece piece = senteHandPieces[fromIndex];
+        if (piece == null) return null;
+
+        Piece targetPiece = pieceBoard[toPos.x, toPos.y];
+
+        pieceBoard[toPos.x, toPos.y] = piece;
+
+        return targetPiece;
+    }
+
+    public Piece MovePieceFromGoteHand(int fromIndex, Vector2Int toPos)
+    {
+        Piece piece = goteHandPieces[fromIndex];
+        if (piece == null) return null;
+
+        Piece targetPiece = pieceBoard[toPos.x, toPos.y];
+
+        pieceBoard[toPos.x, toPos.y] = piece;
+
+        return targetPiece;
     }
 
     // -------------------------
@@ -115,9 +152,6 @@ public class GameManager : MonoBehaviour
     {
         Piece piece = pieceBoard[pos.x, pos.y];
         if (piece == null) return;
-        Debug.Log("AddToHand発動");
-        Debug.Log(piece.data.team);
-        Debug.Log(piece.data.type);
         if (piece.data.team == Team.Sente)
         {
             Piece goteHandPiece = pieceFactory.GetPiece(Team.Gote, piece.data.type, false, true);
@@ -186,7 +220,7 @@ public class GameManager : MonoBehaviour
     // -------------------------
     // セル管理
     // -------------------------
-    public void ClearCell()
+    public void ClearCells()
     {
         for (int y = 0; y < 9; y++)
         {
@@ -195,24 +229,37 @@ public class GameManager : MonoBehaviour
                 cellBoard[x, y]?.SetNormal();
             }
         }
+        for (int y = 0; y < 10; y++)
+        {
+            for(int x = 0; x < 2; x++)
+            {
+                senteHandCells[x, y]?.SetNormal();
+                goteHandCells[x, y]?.SetNormal();
+            }
+        }
     }
 
-    public void ChangeCellsByPiece(Vector2Int pos)
+    public void ChangeBoardCells(List<Vector2Int> positions)
     {
-        List<Vector2Int> checkPoints = new List<Vector2Int>();
-        // checkPoints = GetMovablePositions(pos);
-        checkPoints = GetMovablePositions(pos);
-        // -------------------------
-        // セル反映
-        // -------------------------
-        foreach (var vec in checkPoints)
+        foreach (var pos in positions)
         {
-            cellBoard[vec.x, vec.y].SetPlaceable();
+            cellBoard[pos.x, pos.y].SetPlaceable();
         }
-        if(pieceBoard[pos.x, pos.y] == null) return;
+    }
+    public void ChangeBoardCellSelected(Vector2Int pos)
+    {
         cellBoard[pos.x, pos.y].SetSelected();
     }
-    public List<Vector2Int> GetEmptyPositions()
+
+    public void ChangeSenteHandCellSelected(Vector2Int pos)
+    {
+        senteHandCells[pos.x, pos.y].SetSelected();
+    }
+    public void ChangeGoteHandCellSelected(Vector2Int pos)
+    {
+        goteHandCells[pos.x, pos.y].SetSelected();
+    }
+    public List<Vector2Int> GetHandPieceMovablePositions()
     {
         List<Vector2Int> result = new List<Vector2Int>();
 
@@ -230,7 +277,7 @@ public class GameManager : MonoBehaviour
         return result;
     }
 
-    public List<Vector2Int> GetMovablePositions(Vector2Int pos)
+    public List<Vector2Int> GetBoardPieceMovablePositions(Vector2Int pos)
     {
         Piece piece = pieceBoard[pos.x, pos.y];
         if (piece == null) return new List<Vector2Int>();
@@ -249,19 +296,26 @@ public class GameManager : MonoBehaviour
         {
             for (int i = 1; i < 9; i++)
             {
-                Vector2Int target = pos + vec * i;
+                Vector2Int targetPos = pos + vec * i;
 
-                if (!IsInsideBoard(target))
+                if (!IsInsideBoard(targetPos))
                     break;
-
                 // 駒があるなら止める
-                if (pieceBoard[target.x, target.y] != null)
+                Piece targetPiece = pieceBoard[targetPos.x, targetPos.y];
+                if (targetPiece != null)
                 {
-                    // ★必要なら「取れる」処理をここに入れる
-                    break;
+                    if(targetPiece.data.team == piece.data.team)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        result.Add(targetPos);
+                        break;
+                    }
                 }
 
-                result.Add(target);
+                result.Add(targetPos);
             }
         }
 
