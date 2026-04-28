@@ -8,6 +8,18 @@ public class SelectState : IState
     }
     public void Exit(){}
     public IState OnClick(Vector2 pos){
-        return new BoardMoveState();
+        if(BoardConverter.WorldToBoard(pos, out Vector2Int boardPos))
+        {
+            return new BoardMoveState();
+        }
+        if (BoardConverter.WorldToSenteHand(pos, out Vector2Int senteHandPos))
+        {
+            return new SenteMoveState();
+        }
+        if (BoardConverter.WorldToGoteHand(pos, out Vector2Int goteHandPos))
+        {
+            return new GoteMoveState();
+        }
+        return null;
     }
 }

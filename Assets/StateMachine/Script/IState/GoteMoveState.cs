@@ -7,5 +7,7 @@ public class GoteMoveState : IState
         Debug.Log("GoteMoveStateに入りました");
     }
     public void Exit(){}
-    public IState OnClick(Vector2 pos){return null;}
+    public IState OnClick(Vector2 pos){
+        return new IdleState();
+    }
 }

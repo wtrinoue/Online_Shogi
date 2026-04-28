@@ -8,6 +8,6 @@ public class SenteMoveState : IState
     }
     public void Exit(){}
     public IState OnClick(Vector2 pos){
-        return null;
+        return new IdleState();
     }
 }
