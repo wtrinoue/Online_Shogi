@@ -410,9 +410,17 @@ public class GameManager : MonoBehaviour
     {
         return senteHandPieces;
     }
+    public Cell[,] GetSenteHandCells()
+    {
+        return senteHandCells;
+    }
 
     public List<Piece> GetGoteHandPieces()
     {
         return goteHandPieces;
+    }
+    public Cell[,] GetGoteHandCells()
+    {
+        return goteHandCells;
     }
 }
