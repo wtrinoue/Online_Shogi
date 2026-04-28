@@ -3,6 +3,7 @@ using UnityEngine;
 public class StateMachine : MonoBehaviour
 {
     [SerializeField] private GameObject inputObject;
+    [SerializeField] private BoardConfig boardConfig;
 
     private IInputProvider inputAdapter;
     private IState currentState = new TestState();
@@ -20,6 +21,7 @@ public class StateMachine : MonoBehaviour
 
     void Start()
     {
+        BoardConverter.SetBoardConfig(boardConfig);
         inputAdapter.OnClickEvent += OnClick;
     }
 

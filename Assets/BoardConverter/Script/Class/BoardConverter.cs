@@ -6,6 +6,13 @@ public static class BoardConverter
     private static Vector3 senteHandOffset = new Vector3(-10, -3, 0);
     private static Vector3 goteHandOffset = new Vector3(10, -3, 0);
     private static float cellSize = 1f;
+    public static void SetBoardConfig(BoardConfig boardConfig)
+    {
+        boardOffset = boardConfig.boardOffset;
+        senteHandOffset = boardConfig.senteHandOffset;
+        goteHandOffset = boardConfig.goteHandOffset;
+        cellSize = boardConfig.cellSize;
+    }
     // -------------------------
     // 盤面用
     // -------------------------
