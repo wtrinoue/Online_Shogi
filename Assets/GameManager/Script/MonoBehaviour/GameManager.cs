@@ -20,7 +20,9 @@ public class GameManager : MonoBehaviour
     public Cell[,] senteHandCells = new Cell[2, 10];
     public List<Piece> goteHandPieces = new List<Piece>();
     public Cell[,] goteHandCells = new Cell[2, 10];
-
+    private Vector2Int selectedBoardPiecePos = new Vector2Int(0,0);
+    private Vector2Int selectedSenteHandPos = new Vector2Int(0,0);
+    private Vector2Int selectedGoteHandPos = new Vector2Int(0,0);
 
     void Awake()
     {
@@ -35,21 +37,7 @@ public class GameManager : MonoBehaviour
         InitializeCell();
         DebugPrintCellBoard();
         DebugPrintPieceBoard();
-    }
-    // -------------------------
-    // 取得
-    // -------------------------
-    public Piece GetBoardPiece(Vector2Int pos)
-    {
-        return pieceBoard[pos.x, pos.y];
-    }
-    public Piece GetSenteHandPiece(int index)
-    {
-        return senteHandPieces[index];
-    }
-    public Piece GetGoteHandPiece(int index)
-    {
-        return goteHandPieces[index];
+        TestAddToHand();
     }
     // -------------------------
     // 初期化
@@ -397,7 +385,44 @@ public class GameManager : MonoBehaviour
 
         Debug.Log(sb.ToString());
     }
-
+    // -------------------------
+    // 選択した駒の記憶
+    // -------------------------
+    public void SetSelectedBoardPiecePosition(Vector2Int pos)
+    {
+        Debug.Log($"pos = {pos} on Board");
+        selectedBoardPiecePos = pos;
+    }
+    public void SetSelectedSenteHandPiecePosition(Vector2Int pos)
+    {
+        Debug.Log($"pos = {pos} on SenteHand");
+        selectedSenteHandPos = pos;
+    }
+    public void SetSelectedGoteHandPiecePosition(Vector2Int pos)
+    {
+        Debug.Log($"pos = {pos} on GoteHand");
+        selectedGoteHandPos = pos;
+    }
+    // -------------------------
+    // 取得
+    // -------------------------
+    public Piece GetBoardPiece(Vector2Int pos)
+    {
+        return pieceBoard[pos.x, pos.y];
+    }
+    public Piece GetSenteHandPiece(Vector2Int pos)
+    {
+        int index = pos.x*10 + pos.y;
+        if(index > senteHandPieces.Count) return null;
+        return senteHandPieces[index];
+    }
+    public Piece GetGoteHandPiece(Vector2Int pos)
+    {
+        int index = pos.x*10 + pos.y;
+        if(index > goteHandPieces.Count) return null;
+        return goteHandPieces[index];
+    }
+    // 以下GameViewer用
     public Piece[,] GetPieceBoard()
     {
         return pieceBoard;
