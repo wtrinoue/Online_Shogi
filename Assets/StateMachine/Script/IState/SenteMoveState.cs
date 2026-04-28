@@ -24,7 +24,7 @@ public class SenteMoveState : IState
                 }
                 return new IdleState();
             }
-            return null;
+            return new SelectState();
         }
         return new SelectState();
     }

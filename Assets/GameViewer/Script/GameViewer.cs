@@ -139,7 +139,6 @@ public class GameViewer : MonoBehaviour
             Piece piece = senteHandPieces[i];
             int x = i / 10;
             int y = i % 10;
-            Debug.Log("持ち駒を追加しました");
             PieceView pieceView = Instantiate(pieceViewPrefab, transform);
             pieceView.transform.position = new Vector3(x + senteHandStartPos.x, y + senteHandStartPos.y, 0f); // 少し上に表示
             pieceView.SetPiece(piece);
@@ -169,7 +168,6 @@ public class GameViewer : MonoBehaviour
             Piece piece = goteHandPieces[i];
             int x = i / 10;
             int y = i % 10;
-            Debug.Log("持ち駒を追加しました");
             PieceView pieceView = Instantiate(pieceViewPrefab, transform);
             pieceView.transform.position = new Vector3(x + goteHandStartPos.x, y + goteHandStartPos.y, 0f); // 少し上に表示
             pieceView.SetPiece(piece);

@@ -321,7 +321,7 @@ public class GameManager : MonoBehaviour
     // -------------------------
     public void SetSelectedBoardPiecePosition(Vector2Int pos)
     {
-        Debug.Log($"pos = {pos} on Board");
+        // Debug.Log($"pos = {pos} on Board");
         selectedBoardPiecePos = pos;
     }
     public void SetSelectedSenteHandPiecePosition(Vector2Int pos)
