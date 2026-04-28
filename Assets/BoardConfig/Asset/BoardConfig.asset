@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BoardConfig
   boardOffset: {x: -4, y: -4, z: 0}
   senteHandOffset: {x: -10, y: -4.5, z: 0}
-  goteHandOffset: {x: 10, y: -4.5, z: 0}
+  goteHandOffset: {x: 9, y: -4.5, z: 0}
   cellSize: 1
