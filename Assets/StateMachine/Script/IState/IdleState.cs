@@ -8,6 +8,7 @@ public class IdleState : IState
     }
     public void Exit(){}
     public IState OnClick(Vector2 pos){
-        return new SelectState();
+        Debug.Log("クリックされたよ");
+        return new TextState("SelectStateに移行",new SelectState());
     }
 }

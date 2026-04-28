@@ -23,6 +23,7 @@ public class StateMachine : MonoBehaviour
     {
         BoardConverter.SetBoardConfig(boardConfig);
         inputAdapter.OnClickEvent += OnClick;
+        currentState.Enter();
     }
 
     void OnDisable()
@@ -33,7 +34,9 @@ public class StateMachine : MonoBehaviour
 
     public void ChangeState(IState state)
     {
+        currentState.Exit();
         currentState = state;
+        currentState.Enter();
     }
 
     public void OnClick(Vector2 pos)
