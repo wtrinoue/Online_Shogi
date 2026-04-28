@@ -1,33 +1,30 @@
 using UnityEngine;
-using TMPro;
 
-public class TextManager : MonoBehaviour
+public class TextState : IState
 {
-    public static TextManager Instance;
+    private string message;
+    private IState nextState;
 
-    [SerializeField] private GameObject messagePanel;
-    [SerializeField] private TMP_Text messageText;
-
-    private void Awake()
+    public TextState(string message, IState nextState)
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        Show("実験");
-        Hide();
+        this.message = message;
+        this.nextState = nextState;
     }
 
-    public void Show(string message)
+    public void Enter()
     {
-        messageText.text = message;
-        messagePanel.SetActive(true);
+        Debug.Log("TextStateに入りました");
+        TextManager.Instance.Show(message);
     }
 
-    public void Hide()
+    public void Exit()
     {
-        messagePanel.SetActive(false);
+        TextManager.Instance.Hide();
+    }
+
+    public IState OnClick(Vector2 pos)
+    {
+        // クリックで次の状態へ
+        return nextState;
     }
 }
