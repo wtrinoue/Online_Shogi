@@ -39,7 +39,18 @@ public class GameManager : MonoBehaviour
     // -------------------------
     // 取得
     // -------------------------
-    // public Piece GetPiece(){}
+    public Piece GetBoardPiece(Vector2Int pos)
+    {
+        return pieceBoard[pos.x, pos.y];
+    }
+    public Piece GetSenteHandPiece(int index)
+    {
+        return senteHandPieces[index];
+    }
+    public Piece GetGoteHandPiece(int index)
+    {
+        return goteHandPieces[index];
+    }
     // -------------------------
     // 初期化
     // -------------------------
