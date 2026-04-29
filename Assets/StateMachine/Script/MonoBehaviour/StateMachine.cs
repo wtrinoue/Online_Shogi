@@ -6,7 +6,7 @@ public class StateMachine : MonoBehaviour
     [SerializeField] private BoardConfig boardConfig;
 
     private IInputProvider inputAdapter;
-    private IState currentState = new IdleState();
+    private IState currentState;
 
     void Awake()
     {
@@ -23,9 +23,9 @@ public class StateMachine : MonoBehaviour
     {
         BoardConverter.SetBoardConfig(boardConfig);
         inputAdapter.OnClickEvent += OnClick;
+        currentState = new IdleState();
         currentState.Enter();
     }
-
     void OnDisable()
     {
         if (inputAdapter != null)

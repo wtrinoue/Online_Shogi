@@ -18,7 +18,7 @@ public class GameViewer : MonoBehaviour
     private Cell[,] goteHandCells = new Cell[2,10];
     private GameManager gameManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         if (Instance != null && Instance != this)
         {
