@@ -18,7 +18,7 @@ public class GoteMoveState : IState
                 {
                     GameManager.Instance.AddToHand(targetPiece);
                 }
-                if (GameManager.Instance.IsPromotable(boardPos))
+                if(GameManager.Instance.IsPromotable(boardPos))
                 {
                     GameManager.Instance.PromotePiece(boardPos);
                 }

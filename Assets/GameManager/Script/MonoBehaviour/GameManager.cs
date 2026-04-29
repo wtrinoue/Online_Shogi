@@ -369,6 +369,13 @@ public class GameManager : MonoBehaviour
         return goteHandPieces[index];
     }
     // -------------------------
+    // セルの取得
+    // -------------------------
+    public Cell GetBoardCell(Vector2Int pos)
+    {
+        return cellBoard[pos.x, pos.y];
+    }
+    // -------------------------
     // GameViewer用の全体のデータの取得
     // -------------------------
     public Piece[,] GetPieceBoard()
