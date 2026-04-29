@@ -247,9 +247,9 @@ public class GameManager : MonoBehaviour
         // -------------------------
         // 方向（伸びる移動）
         // -------------------------
-        foreach (var vec in direction)
+        foreach (var vec in direction)// 8方向に対して
         {
-            for (int i = 1; i < 9; i++)
+            for (int i = 1; i < 9; i++)// 9マス分伸ばす
             {
                 Vector2Int targetPos = pos + vec * i;
 
@@ -261,12 +261,12 @@ public class GameManager : MonoBehaviour
                 {
                     if(targetPiece.data.team == piece.data.team)
                     {
-                        continue;
+                        break;
                     }
                     else
                     {
                         result.Add(targetPos);
-                        continue;
+                        break;
                     }
                 }
 
@@ -277,7 +277,7 @@ public class GameManager : MonoBehaviour
         // -------------------------
         // 固定移動
         // -------------------------
-        foreach (var vec in position)
+        foreach (var vec in position)// 8方向に対して
         {
             Vector2Int targetPos = pos + vec;
 
@@ -289,7 +289,7 @@ public class GameManager : MonoBehaviour
             {
                 if(targetPiece.data.team == piece.data.team)
                 {
-                    continue;
+                    break;
                 }
                 else
                 {
