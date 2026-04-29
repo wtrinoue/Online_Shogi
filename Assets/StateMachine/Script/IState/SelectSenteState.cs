@@ -7,38 +7,52 @@ public class SelectSenteState : IState
         Debug.Log("SelectSenteStateに入りました");
         StateModule.Viewer.BuildAll();
     }
-    public void Exit()
-    {
-        StateModule.Viewer.BuildAll();
-    }
+    public void Exit(){}
     public IState OnClick(Vector2 pos){
         if(BoardConverter.WorldToBoard(pos, out Vector2Int boardPos))
         {
             if(StateModule.Manager.IsPlaceable(boardPos))
             {
                 StateModule.Manager.MoveFromSenteHand(boardPos);
-                return new IdleState();
+                StateModule.Turn.ChangeTurn();
+                StateModule.Manager.ClearCells();
+                return new TextState($"{StateModule.Turn.GetCurrentTurn()}のターン", new IdleState());
             }
             if(StateModule.Manager.SelectBoardPiece(boardPos))
             {
-                return new SelectBoardState();
+                if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+                {
+                    StateModule.Manager.ChangeCellsByBoardPiece(boardPos);
+                    return new SelectBoardState();
+                }
             }
         }
         if (BoardConverter.WorldToSenteHand(pos, out Vector2Int senteHandPos))
         {
             if (StateModule.Manager.SelectSentePiece(senteHandPos))
             {
-                StateModule.Viewer.BuildSenteHand();
-                return null;
+                if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+                {
+                    StateModule.Manager.ChangeCellsBySenteHandPiece(senteHandPos);
+                    StateModule.Viewer.BuildSenteHand();
+                    StateModule.Viewer.BuildBoard();
+                    return null;
+                }
             }
         }
         if (BoardConverter.WorldToGoteHand(pos, out Vector2Int goteHandPos))
         {
             if (StateModule.Manager.SelectGotePiece(goteHandPos))
             {
-                return new SelectGoteState();
+                if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+                {
+                    StateModule.Manager.ChangeCellsByGoteHandPiece(goteHandPos);
+                    StateModule.Viewer.BuildGoteHand();
+                    return new SelectGoteState();
+                }
             }
         }
         return null;
     }
 }
+

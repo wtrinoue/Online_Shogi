@@ -4,15 +4,15 @@ public static class StateModule
 {
     public static class Manager
     {
+        public static Team GetSelectedPieceTeam()
+        {
+            return GameManager.Instance.GetSelectedPiece().data.team;
+        }
         public static bool SelectBoardPiece(Vector2Int pos)
         {
             Piece piece = GameManager.Instance.GetBoardPiece(pos);
             if(piece != null){
-                GameManager.Instance.ClearCells();
                 GameManager.Instance.SetSelectedBoardPiecePosition(pos);
-                GameManager.Instance.ChangeBoardCellSelected(pos);
-                List<Vector2Int> positions = GameManager.Instance.GetBoardPieceMovablePositions(pos);
-                GameManager.Instance.ChangeBoardCells(positions);
                 return true;
             }
             else
@@ -26,12 +26,7 @@ public static class StateModule
             Piece piece = GameManager.Instance.GetSenteHandPiece(pos);
             if(piece != null)
             {
-                GameManager.Instance.ClearCells();
                 GameManager.Instance.SetSelectedSenteHandPiecePosition(pos);
-                GameManager.Instance.ChangeSenteHandCellSelected(pos);
-                List<Vector2Int> positions = GameManager.Instance.GetHandPieceMovablePositions();
-                GameManager.Instance.ChangeBoardCells(positions);
-                GameViewer.Instance.ReloadSenteHandCells();
                 return true;
             }
             else
@@ -45,11 +40,7 @@ public static class StateModule
             Piece piece = GameManager.Instance.GetGoteHandPiece(pos);
             if(piece != null)
             {
-                GameManager.Instance.ClearCells();
                 GameManager.Instance.SetSelectedGoteHandPiecePosition(pos);
-                GameManager.Instance.ChangeGoteHandCellSelected(pos);
-                List<Vector2Int> positions = GameManager.Instance.GetHandPieceMovablePositions();
-                GameManager.Instance.ChangeBoardCells(positions);
                 return true;
             }
             else
@@ -103,6 +94,29 @@ public static class StateModule
             }
         }
 
+        public static void ChangeCellsByBoardPiece(Vector2Int pos)
+        {
+            GameManager.Instance.ClearCells();
+            GameManager.Instance.ChangeBoardCellSelected(pos);
+            List<Vector2Int> positions = GameManager.Instance.GetBoardPieceMovablePositions(pos);
+            GameManager.Instance.ChangeBoardCells(positions);
+        }
+
+        public static void ChangeCellsBySenteHandPiece(Vector2Int pos)
+        {
+            GameManager.Instance.ClearCells();
+            GameManager.Instance.ChangeSenteHandCellSelected(pos);
+            List<Vector2Int> positions = GameManager.Instance.GetHandPieceMovablePositions();
+            GameManager.Instance.ChangeBoardCells(positions);
+        }
+
+        public static void ChangeCellsByGoteHandPiece(Vector2Int pos)
+        {
+            GameManager.Instance.ClearCells();
+            GameManager.Instance.ChangeGoteHandCellSelected(pos);
+            List<Vector2Int> positions = GameManager.Instance.GetHandPieceMovablePositions();
+            GameManager.Instance.ChangeBoardCells(positions);
+        }
         public static void ClearCells()
         {
             GameManager.Instance.ClearCells();
@@ -144,6 +158,19 @@ public static class StateModule
         public static Team GetCurrentTurn()
         {
             return currentTurn;
+        }
+    }
+
+    public static class Text
+    {
+        public static void Show(string message)
+        {
+            TextManager.Instance.Show(message);
+        }
+
+        public static void Hide()
+        {
+            TextManager.Instance.Hide();
         }
     }
 }

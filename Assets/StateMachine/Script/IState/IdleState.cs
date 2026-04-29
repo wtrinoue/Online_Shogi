@@ -8,7 +8,6 @@ public class IdleState : IState
         Debug.Log("IdleStateに入りました");
         StateModule.Manager.ClearCells();
         StateModule.Viewer.BuildAll();
-
     }
     public void Exit()
     {
@@ -19,24 +18,36 @@ public class IdleState : IState
         {
             if(StateModule.Manager.SelectBoardPiece(boardPos))
             {
-                StateModule.Viewer.BuildBoard();
-                return new SelectBoardState();
+                if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+                {
+                    StateModule.Manager.ChangeCellsByBoardPiece(boardPos);
+                    StateModule.Viewer.BuildBoard();
+                    return new SelectBoardState();
+                }
             }
         }
         if (BoardConverter.WorldToSenteHand(pos, out Vector2Int senteHandPos))
         {
             if(StateModule.Manager.SelectSentePiece(senteHandPos))
             {
-                StateModule.Viewer.BuildSenteHand();
-                return new SelectSenteState();
+                if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+                {
+                    StateModule.Manager.ChangeCellsBySenteHandPiece(senteHandPos);
+                    StateModule.Viewer.BuildSenteHand();
+                    return new SelectSenteState();
+                }
             }
         }
         if (BoardConverter.WorldToGoteHand(pos, out Vector2Int goteHandPos))
         {
             if(StateModule.Manager.SelectGotePiece(goteHandPos))
             {
-                StateModule.Viewer.BuildGoteHand();
-                return new SelectGoteState();
+                if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+                {
+                    StateModule.Manager.ChangeCellsByGoteHandPiece(goteHandPos);
+                    StateModule.Viewer.BuildGoteHand();
+                    return new SelectGoteState();
+                }
             }
         }
         return null;
