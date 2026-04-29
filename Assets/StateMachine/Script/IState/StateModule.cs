@@ -25,6 +25,7 @@ public static class StateModule
         Piece piece = GameManager.Instance.GetSenteHandPiece(pos);
         if(piece != null)
         {
+            Debug.Log("SenteHandで駒を取得しました");
             GameManager.Instance.ClearCells();
             GameManager.Instance.SetSelectedSenteHandPiecePosition(pos);
             GameManager.Instance.ChangeSenteHandCellSelected(pos);
@@ -106,5 +107,14 @@ public static class StateModule
         {
             GameManager.Instance.PromotePiece(pos);
         }
+    }
+    public static void BuildAll()
+    {
+        GameViewer.Instance.ReloadAllData();
+        GameViewer.Instance.BuildAll();
+    }
+    public static void ClearCells()
+    {
+        GameManager.Instance.ClearCells();
     }
 }

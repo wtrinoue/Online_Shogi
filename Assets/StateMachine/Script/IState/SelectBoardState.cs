@@ -4,11 +4,13 @@ public class SelectBoardState : IState
 {
     public void Enter()
     {
-        GameManager.Instance.ClearCells();
-        GameViewer.Instance.ReloadAllData();
-        GameViewer.Instance.BuildAll();
+        Debug.Log("SelectBoardStateに入りました");
+        StateModule.BuildAll();
     }
-    public void Exit(){}
+    public void Exit()
+    {
+        StateModule.BuildAll();
+    }
     public IState OnClick(Vector2 pos){
         if(BoardConverter.WorldToBoard(pos, out Vector2Int boardPos))
         {
@@ -16,7 +18,8 @@ public class SelectBoardState : IState
             {
                 StateModule.MoveFromBoard(boardPos);
                 return new IdleState();
-            }else if(StateModule.SelectBoardPiece(boardPos))
+            }
+            if(StateModule.SelectBoardPiece(boardPos))
             {
                 return null;
             }

@@ -6,11 +6,13 @@ public class IdleState : IState
     public void Enter()
     {
         Debug.Log("IdleStateに入りました");
-        GameManager.Instance.ClearCells();
-        GameViewer.Instance.ReloadAllData();
-        GameViewer.Instance.BuildAll();
+        StateModule.ClearCells();
+        StateModule.BuildAll();
     }
-    public void Exit(){}
+    public void Exit()
+    {
+        StateModule.BuildAll();
+    }
     public IState OnClick(Vector2 pos){
         if(BoardConverter.WorldToBoard(pos, out Vector2Int boardPos))
         {

@@ -289,7 +289,7 @@ public class GameManager : MonoBehaviour
             {
                 if(targetPiece.data.team == piece.data.team)
                 {
-                    break;
+                    continue;
                 }
                 else
                 {
