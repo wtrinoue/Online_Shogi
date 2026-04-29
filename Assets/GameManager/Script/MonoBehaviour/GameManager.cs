@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     private Vector2Int selectedBoardPiecePos = new Vector2Int(0,0);
     private Vector2Int selectedSenteHandPos = new Vector2Int(0,0);
     private Vector2Int selectedGoteHandPos = new Vector2Int(0,0);
+    private Piece selectedPiece = null;
 
     void Awake()
     {
@@ -323,16 +324,19 @@ public class GameManager : MonoBehaviour
     {
         // Debug.Log($"pos = {pos} on Board");
         selectedBoardPiecePos = pos;
+        selectedPiece = GetBoardPiece(pos);
     }
     public void SetSelectedSenteHandPiecePosition(Vector2Int pos)
     {
         Debug.Log($"pos = {pos} on SenteHand");
         selectedSenteHandPos = pos;
+        selectedPiece = GetSenteHandPiece(pos);
     }
     public void SetSelectedGoteHandPiecePosition(Vector2Int pos)
     {
         Debug.Log($"pos = {pos} on GoteHand");
         selectedGoteHandPos = pos;
+        selectedPiece = GetGoteHandPiece(pos);
     }
     public Vector2Int GetSelectedBoardPiecePosition()
     {
@@ -346,6 +350,10 @@ public class GameManager : MonoBehaviour
     public Vector2Int GetSelectedGoteHandPiecePosition()
     {
         return selectedGoteHandPos;
+    }
+    public Piece GetSelectedPiece()
+    {
+        return selectedPiece;
     }
     // -------------------------
     // 駒の取得
