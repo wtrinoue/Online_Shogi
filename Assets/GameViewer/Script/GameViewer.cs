@@ -26,6 +26,10 @@ public class GameViewer : MonoBehaviour
             return;
         }
         Instance = this;
+    }
+
+    void Start()
+    {
         gameManager = GameManager.Instance;
         boardStartPos = boardConfig.boardOffset;
         senteHandStartPos = boardConfig.senteHandOffset;

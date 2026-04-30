@@ -34,6 +34,10 @@ public class GameManager : MonoBehaviour
             return;
         }
         Instance = this;
+    }
+
+    void Start()
+    {
         InitializePiece();
         InitializeCell();
         DebugPrintCellBoard();
