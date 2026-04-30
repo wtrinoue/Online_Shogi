@@ -14,8 +14,8 @@ public class TextState : IState
     public void Enter()
     {
         Debug.Log("TextStateに入りました");
-        StateModule.Viewer.BuildAll();
         TextManager.Instance.Show(message);
+        StateModule.Viewer.BuildAll();
     }
 
     public void Exit()

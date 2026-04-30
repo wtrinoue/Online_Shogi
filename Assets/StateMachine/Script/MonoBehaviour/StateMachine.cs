@@ -23,6 +23,9 @@ public class StateMachine : MonoBehaviour
     {
         BoardConverter.SetBoardConfig(boardConfig);
         inputAdapter.OnClickEvent += OnClick;
+    }
+    public void Init()
+    {
         currentState = new TextState($"{StateModule.Turn.GetCurrentTurn()}のターン", new IdleState());
         currentState.Enter();
     }

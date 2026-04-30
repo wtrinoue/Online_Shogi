@@ -26,14 +26,13 @@ public class GameViewer : MonoBehaviour
             return;
         }
         Instance = this;
-    }
-
-    void Start()
-    {
-        gameManager = GameManager.Instance;
         boardStartPos = boardConfig.boardOffset;
         senteHandStartPos = boardConfig.senteHandOffset;
         goteHandStartPos = boardConfig.goteHandOffset;
+    }
+    public void Init()
+    {
+        gameManager = GameManager.Instance;
         ReloadAllData();
         BuildAll();
     }
@@ -51,7 +50,9 @@ public class GameViewer : MonoBehaviour
 
     public void ReloadPieceBoard()
     {
+        Debug.Log($"GameManager: {gameManager == null}");
         pieceBoard = gameManager.GetPieceBoard();
+        Debug.Log($"Reloaded pieceBoard: {pieceBoard}"); // デバッグ用ログ
     }
     public void ReloadCellBoard()
     {

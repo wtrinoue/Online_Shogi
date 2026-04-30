@@ -34,15 +34,12 @@ public class GameManager : MonoBehaviour
             return;
         }
         Instance = this;
+        Debug.Log("GameManager Awake: Instance set");
     }
-
-    void Start()
+    public void Init()
     {
         InitializePiece();
         InitializeCell();
-        DebugPrintCellBoard();
-        DebugPrintPieceBoard();
-        TestAddToHand();
     }
     // -------------------------
     // 初期化
