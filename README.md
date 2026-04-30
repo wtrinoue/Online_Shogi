@@ -4,6 +4,8 @@
 ## 使用技術
 - Unity
 - 五竜陣
-## 進捗
+## 実装予定
 - Stateに常時監視用のUpdateメソッドを追加したほうがいいかも
 - Stateの条件分岐でIdle,SlectBoard,SelectSente,SelectGoteの処理がかなり似ているので統一してもいいかもしれない。
+- 王をとった時にゲームセットの導入
+- タイトルシーンの導入
