@@ -134,7 +134,7 @@ public class GameManager : MonoBehaviour
         Piece targetPiece = pieceBoard[toPos.x, toPos.y];
 
         pieceBoard[toPos.x, toPos.y] = piece;
-
+        senteHandPieces.RemoveAt(fromPos.x * 10 + fromPos.y);
         return targetPiece;
     }
 
@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
         Piece targetPiece = pieceBoard[toPos.x, toPos.y];
 
         pieceBoard[toPos.x, toPos.y] = piece;
-
+        goteHandPieces.RemoveAt(fromPos.x * 10 + fromPos.y);
         return targetPiece;
     }
 
