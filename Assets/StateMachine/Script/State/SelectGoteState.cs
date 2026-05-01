@@ -26,19 +26,7 @@ public class SelectGoteState : State
                 StateModule.Turn.ChangeTurn();
                 StateModule.Manager.ClearCells();
 
-                stateMachine.ChangeState(
-                    // new TextState(
-                    //     stateMachine,
-                    //     $"{StateModule.Turn.GetCurrentTurn()}のターン",
-                    //     new IdleState(stateMachine)
-                    // )
-                    new TimerTextState(
-                        stateMachine,
-                        $"{StateModule.Turn.GetCurrentTurn()}のターン",
-                        1f,
-                        new IdleState(stateMachine)
-                    )
-                );
+                stateMachine.ChangeState(new JudgeState(stateMachine));
                 return;
             }
 

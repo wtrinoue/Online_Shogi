@@ -11,6 +11,7 @@ public class EndState : State
     public override void Enter()
     {
         Debug.Log($"EndStateに入りました。勝者: {winner}");
+        StateModule.Viewer.BuildAll();
     }
 
     public override void Exit()
