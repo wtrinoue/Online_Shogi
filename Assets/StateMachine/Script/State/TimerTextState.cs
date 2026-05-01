@@ -7,8 +7,8 @@ public class TimerTextState : State
     private float timer;
     private State nextState;
 
-    public TimerTextState(StateMachine stateMachine, string message,float timer, State nextState)
-        : base(stateMachine)
+    public TimerTextState(GameContext context, string message, float timer, State nextState)
+        : base(context)
     {
         this.message = message;
         this.timer = timer;
@@ -18,23 +18,24 @@ public class TimerTextState : State
     public override void Enter()
     {
         Debug.Log("TimerTextStateに入りました");
-        TextManager.Instance.ShowMessage(message);
-        StateModule.Viewer.BuildAll();
-        stateMachine.RunCoroutine(TimerCoroutine());
+        context.text.Show(message);
+        context.viewer.BuildAll();
+        context.machine.RunCoroutine(TimerCoroutine());
     }
 
     public override void Exit()
     {
-        TextManager.Instance.HideMessage();
+        context.text.Hide();
     }
 
     public override void OnClick(Vector2 pos)
     {
     }
+
     private IEnumerator TimerCoroutine()
     {
         yield return new WaitForSeconds(timer);
 
-        stateMachine.ChangeState(nextState);
+        context.machine.ChangeState(nextState);
     }
 }

@@ -3,7 +3,7 @@ public class EndState : State
 {
     private Team winner;
 
-    public EndState(StateMachine stateMachine, Team winner) : base(stateMachine)
+    public EndState(GameContext context, Team winner) : base(context)
     {
         this.winner = winner;
     }
@@ -11,13 +11,13 @@ public class EndState : State
     public override void Enter()
     {
         Debug.Log($"EndStateに入りました。勝者: {winner}");
-        StateModule.Viewer.BuildAll();
-        StateModule.Result.Show($"{winner}の勝ち！");
+        context.viewer.BuildAll();
+        context.result.Show($"{winner}の勝ち！");
     }
 
     public override void Exit()
     {
-        StateModule.Result.Hide();
+        context.result.Hide();
     }
 
     public override void OnClick(Vector2 pos)

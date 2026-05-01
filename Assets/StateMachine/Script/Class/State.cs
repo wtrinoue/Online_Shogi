@@ -1,11 +1,11 @@
 using UnityEngine;
 public abstract class State
 {
-    protected StateMachine stateMachine;
+    protected GameContext context;
 
-    protected State(StateMachine stateMachine)
+    public State(GameContext context)
     {
-        this.stateMachine = stateMachine;
+        this.context = context;
     }
 
     public abstract void Enter();

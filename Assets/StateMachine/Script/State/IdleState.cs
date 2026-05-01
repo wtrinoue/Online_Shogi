@@ -2,19 +2,19 @@ using UnityEngine;
 
 public class IdleState : State
 {
-    public IdleState(StateMachine stateMachine) : base(stateMachine){}
+    public IdleState(GameContext context) : base(context){}
 
     public override void Enter()
     {
         Debug.Log("IdleStateに入りました");
 
-        StateModule.Manager.ClearCells();
-        StateModule.Viewer.BuildAll();
+        context.manager.ClearCells();
+        context.viewer.BuildAll();
     }
 
     public override void Exit()
     {
-        StateModule.Viewer.BuildAll();
+        context.viewer.BuildAll();
     }
 
     public override void OnClick(Vector2 pos)
@@ -22,13 +22,13 @@ public class IdleState : State
         // --- 盤面クリック ---
         if (BoardConverter.WorldToBoard(pos, out Vector2Int boardPos))
         {
-            if (StateModule.Manager.SelectBoardPiece(boardPos) &&
-                StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+            if (context.manager.SelectBoardPiece(boardPos) &&
+                context.turn.GetCurrentTurn() == context.manager.GetSelectedPieceTeam())
             {
-                StateModule.Manager.ChangeCellsByBoardPiece(boardPos);
-                StateModule.Viewer.BuildBoard();
+                context.manager.ChangeCellsByBoardPiece(boardPos);
+                context.viewer.BuildBoard();
 
-                stateMachine.ChangeState(new SelectBoardState(stateMachine));
+                context.machine.ChangeState(new SelectBoardState(context));
                 return;
             }
         }
@@ -36,13 +36,13 @@ public class IdleState : State
         // --- 先手持ち駒 ---
         if (BoardConverter.WorldToSenteHand(pos, out Vector2Int senteHandPos))
         {
-            if (StateModule.Manager.SelectSentePiece(senteHandPos) &&
-                StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+            if (context.manager.SelectSentePiece(senteHandPos) &&
+                context.turn.GetCurrentTurn() == context.manager.GetSelectedPieceTeam())
             {
-                StateModule.Manager.ChangeCellsBySenteHandPiece(senteHandPos);
-                StateModule.Viewer.BuildSenteHand();
+                context.manager.ChangeCellsBySenteHandPiece(senteHandPos);
+                context.viewer.BuildSenteHand();
 
-                stateMachine.ChangeState(new SelectSenteState(stateMachine));
+                context.machine.ChangeState(new SelectSenteState(context));
                 return;
             }
         }
@@ -50,13 +50,13 @@ public class IdleState : State
         // --- 後手持ち駒 ---
         if (BoardConverter.WorldToGoteHand(pos, out Vector2Int goteHandPos))
         {
-            if (StateModule.Manager.SelectGotePiece(goteHandPos) &&
-                StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+            if (context.manager.SelectGotePiece(goteHandPos) &&
+                context.turn.GetCurrentTurn() == context.manager.GetSelectedPieceTeam())
             {
-                StateModule.Manager.ChangeCellsByGoteHandPiece(goteHandPos);
-                StateModule.Viewer.BuildGoteHand();
+                context.manager.ChangeCellsByGoteHandPiece(goteHandPos);
+                context.viewer.BuildGoteHand();
 
-                stateMachine.ChangeState(new SelectGoteState(stateMachine));
+                context.machine.ChangeState(new SelectGoteState(context));
                 return;
             }
         }
