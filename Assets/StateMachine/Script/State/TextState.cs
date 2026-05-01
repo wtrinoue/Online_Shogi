@@ -1,31 +1,31 @@
 using UnityEngine;
 
-public class TextState : IState
+public class TextState : State
 {
     private string message;
-    private IState nextState;
+    private State nextState;
 
-    public TextState(string message, IState nextState)
+    public TextState(StateMachine stateMachine, string message, State nextState)
+        : base(stateMachine)
     {
         this.message = message;
         this.nextState = nextState;
     }
 
-    public void Enter()
+    public override void Enter()
     {
         Debug.Log("TextStateに入りました");
         TextManager.Instance.Show(message);
         StateModule.Viewer.BuildAll();
     }
 
-    public void Exit()
+    public override void Exit()
     {
         TextManager.Instance.Hide();
     }
 
-    public IState OnClick(Vector2 pos)
+    public override void OnClick(Vector2 pos)
     {
-        // クリックで次の状態へ
-        return nextState;
+        stateMachine.ChangeState(nextState);
     }
 }
