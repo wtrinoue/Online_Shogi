@@ -414,7 +414,7 @@ public class GameManager : MonoBehaviour
     }
 
     // -------------------------
-    // でバック用
+    // デバック用
     // -------------------------
 
     public void DebugPrintPieceBoard()
