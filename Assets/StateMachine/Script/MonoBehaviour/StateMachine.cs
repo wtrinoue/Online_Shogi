@@ -6,7 +6,7 @@ public class StateMachine : MonoBehaviour
     [SerializeField] private BoardConfig boardConfig;
 
     private IInputProvider inputAdapter;
-    private IState currentState;
+    private State currentState;
 
     void Awake()
     {
@@ -26,7 +26,7 @@ public class StateMachine : MonoBehaviour
     }
     public void Init()
     {
-        currentState = new TextState($"{StateModule.Turn.GetCurrentTurn()}のターン", new IdleState());
+        currentState = new TextState(this, $"{StateModule.Turn.GetCurrentTurn()}のターン", new IdleState(this));
         currentState.Enter();
     }
     void OnDisable()
@@ -35,7 +35,7 @@ public class StateMachine : MonoBehaviour
             inputAdapter.OnClickEvent -= OnClick;
     }
 
-    public void ChangeState(IState state)
+    public void ChangeState(State state)
     {
         currentState.Exit();
         currentState = state;
@@ -44,11 +44,6 @@ public class StateMachine : MonoBehaviour
 
     public void OnClick(Vector2 pos)
     {
-        if (currentState == null) return;
-
-        var next = currentState.OnClick(pos);
-
-        if (next != null)
-            ChangeState(next);
+        currentState.OnClick(pos);
     }
 }

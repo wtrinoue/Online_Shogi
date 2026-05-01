@@ -1,59 +1,81 @@
 using UnityEngine;
-using System.Collections.Generic;
-public class SelectBoardState : IState
+
+public class SelectBoardState : State
 {
-    public void Enter()
+    public SelectBoardState(StateMachine stateMachine) : base(stateMachine){}
+
+    public override void Enter()
     {
         Debug.Log("SelectBoardStateに入りました");
         StateModule.Viewer.BuildAll();
     }
-    public void Exit(){}
-    public IState OnClick(Vector2 pos){
-        if(BoardConverter.WorldToBoard(pos, out Vector2Int boardPos))
+
+    public override void Exit()
+    {
+    }
+
+    public override void OnClick(Vector2 pos)
+    {
+        // --- 盤面クリック ---
+        if (BoardConverter.WorldToBoard(pos, out Vector2Int boardPos))
         {
-            if(StateModule.Manager.IsPlaceable(boardPos))
+            // 駒移動
+            if (StateModule.Manager.IsPlaceable(boardPos))
             {
                 StateModule.Manager.MoveFromBoard(boardPos);
                 StateModule.Turn.ChangeTurn();
                 StateModule.Manager.ClearCells();
-                return new TextState($"{StateModule.Turn.GetCurrentTurn()}のターン", new IdleState());
+
+                stateMachine.ChangeState(
+                    new TextState(
+                        stateMachine,
+                        $"{StateModule.Turn.GetCurrentTurn()}のターン",
+                        new IdleState(stateMachine)
+                    )
+                );
+                return;
             }
-            if(StateModule.Manager.SelectBoardPiece(boardPos))
+
+            // 同じ盤面駒を再選択
+            if (StateModule.Manager.SelectBoardPiece(boardPos))
             {
-                if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+                if (StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
                 {
                     StateModule.Manager.ChangeCellsByBoardPiece(boardPos);
                     StateModule.Viewer.BuildBoard();
-                    return null;
                 }
+                return;
             }
         }
+
+        // --- 先手持ち駒 ---
         if (BoardConverter.WorldToSenteHand(pos, out Vector2Int senteHandPos))
         {
             if (StateModule.Manager.SelectSentePiece(senteHandPos))
             {
-                if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+                if (StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
                 {
                     StateModule.Manager.ChangeCellsBySenteHandPiece(senteHandPos);
-                    StateModule.Viewer.BuildSenteHand();
-                    return new SelectSenteState();
+
+                    stateMachine.ChangeState(new SelectSenteState(stateMachine));
                 }
+                return;
             }
         }
+
+        // --- 後手持ち駒 ---
         if (BoardConverter.WorldToGoteHand(pos, out Vector2Int goteHandPos))
         {
             if (StateModule.Manager.SelectGotePiece(goteHandPos))
             {
-                if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
+                if (StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
                 {
                     StateModule.Manager.ChangeCellsByGoteHandPiece(goteHandPos);
-                    StateModule.Viewer.BuildGoteHand();
-                    return new SelectGoteState();
+
+                    stateMachine.ChangeState(new SelectGoteState(stateMachine));
                 }
+                return;
             }
         }
-        return null;
     }
 }
-
-
