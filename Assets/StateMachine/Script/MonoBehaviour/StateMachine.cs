@@ -27,7 +27,7 @@ public class StateMachine : MonoBehaviour
     }
     public void Init()
     {
-        // currentState = new TextState(this, $"{StateModule.Turn.GetCurrentTurn()}のターン", new IdleState(this));
+        StateModule.Turn.SetTurn(Team.Sente);
         currentState = new TimerTextState(this, $"{StateModule.Turn.GetCurrentTurn()}のターン", 1f, new IdleState(this));
         currentState.Enter();
     }

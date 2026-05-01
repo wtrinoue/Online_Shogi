@@ -159,6 +159,11 @@ public static class StateModule
         {
             return currentTurn;
         }
+
+        public static void SetTurn(Team turn)
+        {
+            currentTurn = turn;
+        }
     }
 
     public static class Text
