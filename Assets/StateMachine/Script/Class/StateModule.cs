@@ -173,6 +173,20 @@ public static class StateModule
             TextManager.Instance.Hide();
         }
     }
+
+    public static class Judge
+    {
+        public static bool IsGameOver(out Team winner)
+        {
+            if(GameManager.Instance.IsGameOver(out Team win))
+            {
+                winner = win;
+                return true;
+            }
+            winner = Team.Sente; // ダミーの値
+            return false;
+        }
+    }
 }
 
 //ネストクラスで、Manager、Viewer、Turnに分けるとわかりやすいかも。

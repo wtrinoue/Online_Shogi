@@ -155,11 +155,19 @@ public class GameManager : MonoBehaviour
         if (piece == null) return;
         if (piece.data.team == Team.Sente)
         {
+            if(piece.data.type == PieceType.Ou)
+            {
+                ChangeGameState(GameState.GoteWin);
+            }
             Piece goteHandPiece = pieceFactory.GetPiece(Team.Gote, piece.data.type, false, true);
             goteHandPieces.Add(goteHandPiece);
         }
         else
         {
+            if(piece.data.type == PieceType.Ou)
+            {
+                ChangeGameState(GameState.SenteWin);
+            }
             Piece senteHandPiece = pieceFactory.GetPiece(Team.Sente, piece.data.type, false, true);
             senteHandPieces.Add(senteHandPiece);
         }
@@ -306,7 +314,7 @@ public class GameManager : MonoBehaviour
     }
 
     // -------------------------
-    // 判定
+    // 駒の位置判定
     // -------------------------
     public bool IsInsideBoard(Vector2Int pos)
     {
@@ -498,5 +506,37 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log(sb.ToString());
+    }
+    // -------------------------
+    // ゲームの判定
+    // -------------------------
+    enum GameState
+    {
+        Playing,
+        SenteWin,
+        GoteWin
+    }
+    private GameState gameState = GameState.Playing;
+    private void ChangeGameState(GameState newState)
+    {
+        gameState = newState;
+    }
+    public bool IsGameOver(out Team winner)
+    {
+        switch (gameState)
+        {
+            case GameState.Playing:
+                winner = Team.Sente; // ダミーの値
+                return false;
+            case GameState.SenteWin:
+                winner = Team.Sente;
+                return true;
+            case GameState.GoteWin:
+                winner = Team.Gote;
+                return true;
+            default:
+                winner = Team.Sente; // ダミーの値
+                return false;
+        }
     }
 }
