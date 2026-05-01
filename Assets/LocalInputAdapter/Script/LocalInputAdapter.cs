@@ -30,12 +30,10 @@ public class LocalInputAdapter : MonoBehaviour, IInputProvider, InputSystemActio
     {
         if (!context.performed) return;
 
-        Debug.Log("クリックされました");
-
-        // ★ここが修正ポイント
-        Vector2 pos = Mouse.current.position.ReadValue();
-
+        // スクリーン座標（Vector2）
+        Vector2 screenPos = Mouse.current.position.ReadValue();
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+        Vector2 pos = new Vector2(worldPos.x, worldPos.y);
         OnClickEvent?.Invoke(pos);
-        Debug.Log(pos);
     }
 }

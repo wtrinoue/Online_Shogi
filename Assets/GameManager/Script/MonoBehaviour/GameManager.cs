@@ -1,6 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+GameManagerの責務について
+・将棋の駒を操作すること（ゲーム全体の制御はしない）
+・現状を把握するための情報を渡せること
+・StateMachineで将棋のルールがわかるような最小単位のメソッドをもつこと
+*/
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -12,8 +17,13 @@ public class GameManager : MonoBehaviour
     public Cell[,] cellBoard = new Cell[9, 9];
 
     public List<Piece> senteHandPieces = new List<Piece>();
+    public Cell[,] senteHandCells = new Cell[2, 10];
     public List<Piece> goteHandPieces = new List<Piece>();
-
+    public Cell[,] goteHandCells = new Cell[2, 10];
+    private Vector2Int selectedBoardPiecePos = new Vector2Int(0,0);
+    private Vector2Int selectedSenteHandPos = new Vector2Int(0,0);
+    private Vector2Int selectedGoteHandPos = new Vector2Int(0,0);
+    private Piece selectedPiece = null;
 
     void Awake()
     {
@@ -24,14 +34,13 @@ public class GameManager : MonoBehaviour
             return;
         }
         Instance = this;
+        Debug.Log("GameManager Awake: Instance set");
+    }
+    public void Init()
+    {
         InitializePiece();
         InitializeCell();
-        DebugPrintCellBoard();
-        DebugPrintPieceBoard();
-        TestAddToHand();
-        ChangeCellsByPiece(new Vector2Int(4,2));
     }
-
     // -------------------------
     // 初期化
     // -------------------------
@@ -58,66 +67,92 @@ public class GameManager : MonoBehaviour
                 cellBoard[x, y] = new Cell();
             }
         }
+        for (int y = 0; y < 10; y++)
+        {
+            for(int x = 0; x < 2; x++)
+            {
+                senteHandCells[x, y] = new Cell();
+                goteHandCells[x, y] = new Cell();
+            }
+        }
     }
 
     // -------------------------
-    // 成り判定
+    // 成り
     // -------------------------
     public void PromotePiece(Vector2Int pos)
     {
-        Piece piece = pieceBoard[pos.x, pos.y];
-        if (piece == null) return;
+        Debug.Log("成りました！");
+        pieceBoard[pos.x, pos.y].Promote();
+    }
 
-        if (piece.isPromoted) return;
+    public bool IsPromotable(Vector2Int pos)
+    {
+        Piece piece = pieceBoard[pos.x, pos.y];
+        
+        if (piece == null) return false;
+        if (piece.isHanded) return false;
 
         Team team = piece.data.team;
 
         if (team == Team.Sente)
         {
-            if (pos.y >= 6)
-                piece.Promote();
+            if (pos.y >= 6) return true;
         }
         else
         {
-            if (pos.y <= 2)
-                piece.Promote();
+            if (pos.y <= 2) return true;
         }
+
+        return false;
     }
 
     // -------------------------
     // 移動
     // -------------------------
-    public void MovePiece(Vector2Int fromPos, Vector2Int toPos)
+    public Piece MovePieceFromBoard(Vector2Int fromPos, Vector2Int toPos)
     {
         Piece piece = pieceBoard[fromPos.x, fromPos.y];
-        if (piece == null) return;
+        if (piece == null) return null;
 
         Piece targetPiece = pieceBoard[toPos.x, toPos.y];
-
-        if (targetPiece != null)
-        {
-            // 将来：持ち駒処理
-        }
 
         pieceBoard[toPos.x, toPos.y] = piece;
         pieceBoard[fromPos.x, fromPos.y] = null;
 
-        PromotePiece(toPos);
+        return targetPiece;
+    }
 
-        ClearCell();
-        ChangeCellsByPiece(toPos);
+    public Piece MovePieceFromSenteHand(Vector2Int fromPos, Vector2Int toPos)
+    {
+        Piece piece = senteHandPieces[fromPos.x*10 + fromPos.y];
+        if (piece == null) return null;
+
+        Piece targetPiece = pieceBoard[toPos.x, toPos.y];
+
+        pieceBoard[toPos.x, toPos.y] = piece;
+        senteHandPieces.RemoveAt(fromPos.x * 10 + fromPos.y);
+        return targetPiece;
+    }
+
+    public Piece MovePieceFromGoteHand(Vector2Int fromPos, Vector2Int toPos)
+    {
+        Piece piece = goteHandPieces[fromPos.x*10 + fromPos.y];
+        if (piece == null) return null;
+
+        Piece targetPiece = pieceBoard[toPos.x, toPos.y];
+
+        pieceBoard[toPos.x, toPos.y] = piece;
+        goteHandPieces.RemoveAt(fromPos.x * 10 + fromPos.y);
+        return targetPiece;
     }
 
     // -------------------------
     // 持ち駒
     // -------------------------
-    public void AddToHand(Vector2Int pos)
+    public void AddToHand(Piece piece)
     {
-        Piece piece = pieceBoard[pos.x, pos.y];
         if (piece == null) return;
-        Debug.Log("AddToHand発動");
-        Debug.Log(piece.data.team);
-        Debug.Log(piece.data.type);
         if (piece.data.team == Team.Sente)
         {
             Piece goteHandPiece = pieceFactory.GetPiece(Team.Gote, piece.data.type, false, true);
@@ -134,10 +169,253 @@ public class GameManager : MonoBehaviour
     {
         for(int x = 0; x < 9; x++)
         {
-            AddToHand(new Vector2Int(x,0));
-            AddToHand(new Vector2Int(x,8));
+            AddToHand(pieceBoard[x, 0]);
+            AddToHand(pieceBoard[x, 8]);
         }
     }
+
+    // -------------------------
+    // セル管理
+    // -------------------------
+    public void ClearCells()
+    {
+        for (int y = 0; y < 9; y++)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                cellBoard[x, y]?.SetNormal();
+            }
+        }
+        for (int y = 0; y < 10; y++)
+        {
+            for(int x = 0; x < 2; x++)
+            {
+                senteHandCells[x, y]?.SetNormal();
+                goteHandCells[x, y]?.SetNormal();
+            }
+        }
+    }
+
+    public void ChangeBoardCells(List<Vector2Int> positions)
+    {
+        foreach (var pos in positions)
+        {
+            cellBoard[pos.x, pos.y].SetPlaceable();
+        }
+    }
+    public void ChangeBoardCellSelected(Vector2Int pos)
+    {
+        cellBoard[pos.x, pos.y].SetSelected();
+    }
+
+    public void ChangeSenteHandCellSelected(Vector2Int pos)
+    {
+        senteHandCells[pos.x, pos.y].SetSelected();
+    }
+    public void ChangeGoteHandCellSelected(Vector2Int pos)
+    {
+        goteHandCells[pos.x, pos.y].SetSelected();
+    }
+    public List<Vector2Int> GetHandPieceMovablePositions()
+    {
+        List<Vector2Int> result = new List<Vector2Int>();
+
+        for (int y = 0; y < 9; y++)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                if (pieceBoard[x, y] == null)
+                {
+                    result.Add(new Vector2Int(x, y));
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public List<Vector2Int> GetBoardPieceMovablePositions(Vector2Int pos)
+    {
+        Piece piece = pieceBoard[pos.x, pos.y];
+        if (piece == null) return new List<Vector2Int>();
+
+        MovePattern movePattern = piece.GetMovePattern();
+
+        Vector2Int[] direction = movePattern.direction;
+        Vector2Int[] position = movePattern.position;
+
+        List<Vector2Int> result = new List<Vector2Int>();
+
+        // -------------------------
+        // 方向（伸びる移動）
+        // -------------------------
+        foreach (var vec in direction)// 8方向に対して
+        {
+            for (int i = 1; i < 9; i++)// 9マス分伸ばす
+            {
+                Vector2Int targetPos = pos + vec * i;
+
+                if (!IsInsideBoard(targetPos))
+                    continue;
+                // 駒があるなら止める
+                Piece targetPiece = pieceBoard[targetPos.x, targetPos.y];
+                if (targetPiece != null)
+                {
+                    if(targetPiece.data.team == piece.data.team)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        result.Add(targetPos);
+                        break;
+                    }
+                }
+
+                result.Add(targetPos);
+            }
+        }
+
+        // -------------------------
+        // 固定移動
+        // -------------------------
+        foreach (var vec in position)// 8方向に対して
+        {
+            Vector2Int targetPos = pos + vec;
+
+            if (!IsInsideBoard(targetPos))
+                continue;
+            // 駒があるなら止める
+            Piece targetPiece = pieceBoard[targetPos.x, targetPos.y];
+            if (targetPiece != null)
+            {
+                if(targetPiece.data.team == piece.data.team)
+                {
+                    continue;
+                }
+                else
+                {
+                    result.Add(targetPos);
+                    continue;
+                }
+            }
+            result.Add(targetPos);
+        }
+
+        return result;
+    }
+
+    // -------------------------
+    // 判定
+    // -------------------------
+    public bool IsInsideBoard(Vector2Int pos)
+    {
+        return pos.x >= 0 && pos.x < 9 &&
+               pos.y >= 0 && pos.y < 9;
+    }
+
+    public bool IsPlaceableOnBoard(Vector2Int pos)
+    {
+        return cellBoard[pos.x, pos.y].state == CellState.Placeable;
+    }
+    // -------------------------
+    // 選択した駒の管理
+    // -------------------------
+    public void SetSelectedBoardPiecePosition(Vector2Int pos)
+    {
+        // Debug.Log($"pos = {pos} on Board");
+        selectedBoardPiecePos = pos;
+        selectedPiece = GetBoardPiece(pos);
+    }
+    public void SetSelectedSenteHandPiecePosition(Vector2Int pos)
+    {
+        Debug.Log($"pos = {pos} on SenteHand");
+        selectedSenteHandPos = pos;
+        selectedPiece = GetSenteHandPiece(pos);
+    }
+    public void SetSelectedGoteHandPiecePosition(Vector2Int pos)
+    {
+        Debug.Log($"pos = {pos} on GoteHand");
+        selectedGoteHandPos = pos;
+        selectedPiece = GetGoteHandPiece(pos);
+    }
+    public Vector2Int GetSelectedBoardPiecePosition()
+    {
+        return selectedBoardPiecePos;
+    }
+
+    public Vector2Int GetSelectedSenteHandPiecePosition()
+    {
+        return selectedSenteHandPos;
+    }
+    public Vector2Int GetSelectedGoteHandPiecePosition()
+    {
+        return selectedGoteHandPos;
+    }
+    public Piece GetSelectedPiece()
+    {
+        return selectedPiece;
+    }
+    // -------------------------
+    // 駒の取得
+    // -------------------------
+    public Piece GetBoardPiece(Vector2Int pos)
+    {
+        return pieceBoard[pos.x, pos.y];
+    }
+    public Piece GetSenteHandPiece(Vector2Int pos)
+    {
+        int index = pos.x*10 + pos.y;
+        Debug.Log(index);
+        if(index >= senteHandPieces.Count) return null;
+        return senteHandPieces[index];
+    }
+    public Piece GetGoteHandPiece(Vector2Int pos)
+    {
+        int index = pos.x*10 + pos.y;
+        Debug.Log(index);
+        if(index >= goteHandPieces.Count) return null;
+        return goteHandPieces[index];
+    }
+    // -------------------------
+    // セルの取得
+    // -------------------------
+    public Cell GetBoardCell(Vector2Int pos)
+    {
+        return cellBoard[pos.x, pos.y];
+    }
+    // -------------------------
+    // GameViewer用の全体のデータの取得
+    // -------------------------
+    public Piece[,] GetPieceBoard()
+    {
+        return pieceBoard;
+    }
+    public Cell[,] GetCellBoard()
+    {
+        return cellBoard;
+    }
+    public List<Piece> GetSenteHandPieces()
+    {
+        return senteHandPieces;
+    }
+    public Cell[,] GetSenteHandCells()
+    {
+        return senteHandCells;
+    }
+
+    public List<Piece> GetGoteHandPieces()
+    {
+        return goteHandPieces;
+    }
+    public Cell[,] GetGoteHandCells()
+    {
+        return goteHandCells;
+    }
+
+    // -------------------------
+    // デバック用
+    // -------------------------
 
     public void DebugPrintPieceBoard()
     {
@@ -182,92 +460,6 @@ public class GameManager : MonoBehaviour
 
         Debug.Log(sb.ToString());
     }
-
-    // -------------------------
-    // セル管理
-    // -------------------------
-    public void ClearCell()
-    {
-        for (int y = 0; y < 9; y++)
-        {
-            for (int x = 0; x < 9; x++)
-            {
-                cellBoard[x, y]?.SetNormal();
-            }
-        }
-    }
-
-    public void ChangeCellsByPiece(Vector2Int pos)
-    {
-        Piece piece = pieceBoard[pos.x, pos.y];
-        if (piece == null) return;
-
-        MovePattern movePattern = piece.GetMovePattern();
-
-        Vector2Int[] direction = movePattern.direction;
-        Vector2Int[] position = movePattern.position;
-
-        List<Vector2Int> checkPoints = new List<Vector2Int>();
-
-        // -------------------------
-        // 方向（伸びる移動）
-        // -------------------------
-        foreach (var vec in direction)
-        {
-            for (int i = 1; i < 9; i++)
-            {
-                Vector2Int target = pos + vec * i;
-
-                if (!IsInsideBoard(target))
-                    break;
-
-                // 駒があるなら止める
-                if (pieceBoard[target.x, target.y] != null)
-                {
-                    checkPoints.Add(target);
-                    break;
-                }
-
-                checkPoints.Add(target);
-            }
-        }
-
-        // -------------------------
-        // 固定移動
-        // -------------------------
-        foreach (var vec in position)
-        {
-            Vector2Int target = pos + vec;
-
-            if (IsInsideBoard(target))
-            {
-                if (pieceBoard[target.x, target.y] == null)
-                {
-                    checkPoints.Add(target);
-                }
-            }
-        }
-
-        // -------------------------
-        // セル反映
-        // -------------------------
-        foreach (var vec in checkPoints)
-        {
-            cellBoard[vec.x, vec.y].SetPlaceable();
-        }
-
-        cellBoard[pos.x, pos.y].SetSelected();
-    }
-
-    // -------------------------
-    // 判定
-    // -------------------------
-    public bool IsInsideBoard(Vector2Int pos)
-    {
-        return pos.x >= 0 && pos.x < 9 &&
-               pos.y >= 0 && pos.y < 9;
-    }
-
     public void DebugPrintCellBoard()
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -306,23 +498,5 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log(sb.ToString());
-    }
-
-    public Piece[,] GetPieceBoard()
-    {
-        return pieceBoard;
-    }
-    public Cell[,] GetCellBoard()
-    {
-        return cellBoard;
-    }
-    public List<Piece> GetSenteHandPieces()
-    {
-        return senteHandPieces;
-    }
-
-    public List<Piece> GetGoteHandPieces()
-    {
-        return goteHandPieces;
     }
 }

@@ -20,7 +20,7 @@ public class Piece
 
     public void Promote()
     {
-        if(!isHanded)return;
+        if(isHanded)return;
         this.isPromoted = true;
     }
 }

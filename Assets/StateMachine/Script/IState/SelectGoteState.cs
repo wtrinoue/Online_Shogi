@@ -1,21 +1,23 @@
 using UnityEngine;
 using System.Collections.Generic;
-
-public class IdleState : IState
+public class SelectGoteState : IState
 {
     public void Enter()
     {
-        Debug.Log("IdleStateに入りました");
-        StateModule.Manager.ClearCells();
+        Debug.Log("SelectGoteStateに入りました");
         StateModule.Viewer.BuildAll();
     }
-    public void Exit()
-    {
-        StateModule.Viewer.BuildAll();
-    }
+    public void Exit(){}
     public IState OnClick(Vector2 pos){
         if(BoardConverter.WorldToBoard(pos, out Vector2Int boardPos))
         {
+            if(StateModule.Manager.IsPlaceable(boardPos))
+            {
+                StateModule.Manager.MoveFromGoteHand(boardPos);
+                StateModule.Turn.ChangeTurn();
+                StateModule.Manager.ClearCells();
+                return new TextState($"{StateModule.Turn.GetCurrentTurn()}のターン", new IdleState());
+            }
             if(StateModule.Manager.SelectBoardPiece(boardPos))
             {
                 if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
@@ -28,7 +30,7 @@ public class IdleState : IState
         }
         if (BoardConverter.WorldToSenteHand(pos, out Vector2Int senteHandPos))
         {
-            if(StateModule.Manager.SelectSentePiece(senteHandPos))
+            if (StateModule.Manager.SelectSentePiece(senteHandPos))
             {
                 if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
                 {
@@ -40,13 +42,14 @@ public class IdleState : IState
         }
         if (BoardConverter.WorldToGoteHand(pos, out Vector2Int goteHandPos))
         {
-            if(StateModule.Manager.SelectGotePiece(goteHandPos))
+            if (StateModule.Manager.SelectGotePiece(goteHandPos))
             {
                 if(StateModule.Manager.GetSelectedPieceTeam() == StateModule.Turn.GetCurrentTurn())
                 {
                     StateModule.Manager.ChangeCellsByGoteHandPiece(goteHandPos);
                     StateModule.Viewer.BuildGoteHand();
-                    return new SelectGoteState();
+                    StateModule.Viewer.BuildBoard();
+                    return null;
                 }
             }
         }

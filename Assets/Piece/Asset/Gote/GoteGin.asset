@@ -18,7 +18,7 @@ MonoBehaviour:
   promotedSprite: {fileID: -3290464760569710641, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   normalMove:
     direction: []
-    positon:
+    position:
     - {x: -1, y: 1}
     - {x: 1, y: 1}
     - {x: -1, y: -1}
@@ -26,7 +26,7 @@ MonoBehaviour:
     - {x: 1, y: -1}
   promotedMove:
     direction: []
-    positon:
+    position:
     - {x: 0, y: 1}
     - {x: -1, y: 0}
     - {x: 1, y: 0}

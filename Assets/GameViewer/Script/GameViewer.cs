@@ -3,20 +3,22 @@ using UnityEngine;
 
 public class GameViewer : MonoBehaviour
 {
+    public static GameViewer Instance;
     public PieceView pieceViewPrefab;
     public CellView cellViewPrefab;
     public BoardConfig boardConfig;
     private Vector3 boardStartPos = new Vector3(0f, 0f, 0f);
-    private Vector3 senteHnadStartPos = new Vector3(0f, 0f, 0f);
+    private Vector3 senteHandStartPos = new Vector3(0f, 0f, 0f);
     private Vector3 goteHandStartPos = new Vector3(0f, 0f, 0f);
-    private static GameViewer Instance;
     private Piece[,] pieceBoard = new Piece[9,9];
     private Cell[,] cellBoard = new Cell[9,9];
     private List<Piece> senteHandPieces = new List<Piece>();
+    private Cell[,] senteHandCells = new Cell[2,10];
     private List<Piece> goteHandPieces = new List<Piece>();
+    private Cell[,] goteHandCells = new Cell[2,10];
     private GameManager gameManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -24,10 +26,13 @@ public class GameViewer : MonoBehaviour
             return;
         }
         Instance = this;
-        gameManager = GameManager.Instance;
         boardStartPos = boardConfig.boardOffset;
-        senteHnadStartPos = boardConfig.senteHandOffset;
+        senteHandStartPos = boardConfig.senteHandOffset;
         goteHandStartPos = boardConfig.goteHandOffset;
+    }
+    public void Init()
+    {
+        gameManager = GameManager.Instance;
         ReloadAllData();
         BuildAll();
     }
@@ -36,14 +41,18 @@ public class GameViewer : MonoBehaviour
     {
         // 参照渡しなので二度は必要ない可能性がある。
         ReloadPieceBoard();
-        ReloadCellBoard();
         ReloadSenteHandPieces();
         ReloadGoteHandPieces();
+        ReloadCellBoard();
+        ReloadSenteHandCells();
+        ReloadGoteHandCells();
     }
 
     public void ReloadPieceBoard()
     {
+        Debug.Log($"GameManager: {gameManager == null}");
         pieceBoard = gameManager.GetPieceBoard();
+        Debug.Log($"Reloaded pieceBoard: {pieceBoard}"); // デバッグ用ログ
     }
     public void ReloadCellBoard()
     {
@@ -53,17 +62,27 @@ public class GameViewer : MonoBehaviour
     {
         senteHandPieces = gameManager.GetSenteHandPieces();
     }
+    public void ReloadSenteHandCells()
+    {
+        senteHandCells = gameManager.GetSenteHandCells();
+    }
     public void ReloadGoteHandPieces()
     {
         goteHandPieces = gameManager.GetGoteHandPieces();
+    }
+    public void ReloadGoteHandCells()
+    {
+        goteHandCells = gameManager.GetGoteHandCells();
     }
     public void BuildAll()
     {
         DeleteAll();
         BuildCellBoard();
-        BuildPieceBoard();
         BuildSenteHandPieces();
         BuildGoteHandPieces();
+        BuildPieceBoard();
+        BuildSenteHandCells();
+        BuildGoteHandCells();
     }
 
     public void DeleteAll()
@@ -125,10 +144,25 @@ public class GameViewer : MonoBehaviour
             Piece piece = senteHandPieces[i];
             int x = i / 10;
             int y = i % 10;
-            Debug.Log("持ち駒を追加しました");
             PieceView pieceView = Instantiate(pieceViewPrefab, transform);
-            pieceView.transform.position = new Vector3(x + senteHnadStartPos.x, y + senteHnadStartPos.y, 0f); // 少し上に表示
+            pieceView.transform.position = new Vector3(x + senteHandStartPos.x, y + senteHandStartPos.y, 0f); // 少し上に表示
             pieceView.SetPiece(piece);
+        }
+    }
+    public void BuildSenteHandCells()
+    {
+        for (int y = 0; y < 10; y++)
+        {
+            for (int x = 0; x < 2; x++)
+            {
+                Cell cell = senteHandCells[x, y];
+                if (cell == null) continue;
+                CellView cellView = Instantiate(cellViewPrefab, transform);
+                cellView.transform.position = new Vector3(x + senteHandStartPos.x, y + senteHandStartPos.y, 0.1f);
+
+                cellView.SetCell(cell);
+                cellView.UpdateView();
+            }
         }
     }
     public void BuildGoteHandPieces()
@@ -139,10 +173,26 @@ public class GameViewer : MonoBehaviour
             Piece piece = goteHandPieces[i];
             int x = i / 10;
             int y = i % 10;
-            Debug.Log("持ち駒を追加しました");
             PieceView pieceView = Instantiate(pieceViewPrefab, transform);
             pieceView.transform.position = new Vector3(x + goteHandStartPos.x, y + goteHandStartPos.y, 0f); // 少し上に表示
             pieceView.SetPiece(piece);
+        }
+    }
+
+    public void BuildGoteHandCells()
+    {
+        for (int y = 0; y < 10; y++)
+        {
+            for (int x = 0; x < 2; x++)
+            {
+                Cell cell = goteHandCells[x, y];
+                if (cell == null) continue;
+                CellView cellView = Instantiate(cellViewPrefab, transform);
+                cellView.transform.position = new Vector3(x + goteHandStartPos.x, y + goteHandStartPos.y, 0.1f);
+
+                cellView.SetCell(cell);
+                cellView.UpdateView();
+            }
         }
     }
 }
