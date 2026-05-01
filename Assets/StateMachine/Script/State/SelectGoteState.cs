@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class SelectSenteState : State
+public class SelectGoteState : State
 {
-    public SelectSenteState(StateMachine stateMachine) : base(stateMachine){}
+    public SelectGoteState(StateMachine stateMachine) : base(stateMachine){}
 
     public override void Enter()
     {
-        Debug.Log("SelectSenteStateに入りました");
+        Debug.Log("SelectGoteStateに入りました");
         StateModule.Viewer.BuildAll();
     }
 
@@ -19,17 +19,23 @@ public class SelectSenteState : State
         // --- 盤面クリック ---
         if (BoardConverter.WorldToBoard(pos, out Vector2Int boardPos))
         {
-            // 駒を置く処理
+            // 駒を打つ
             if (StateModule.Manager.IsPlaceable(boardPos))
             {
-                StateModule.Manager.MoveFromSenteHand(boardPos);
+                StateModule.Manager.MoveFromGoteHand(boardPos);
                 StateModule.Turn.ChangeTurn();
                 StateModule.Manager.ClearCells();
 
                 stateMachine.ChangeState(
-                    new TextState(
+                    // new TextState(
+                    //     stateMachine,
+                    //     $"{StateModule.Turn.GetCurrentTurn()}のターン",
+                    //     new IdleState(stateMachine)
+                    // )
+                    new TimerTextState(
                         stateMachine,
                         $"{StateModule.Turn.GetCurrentTurn()}のターン",
+                        1f,
                         new IdleState(stateMachine)
                     )
                 );
@@ -43,12 +49,12 @@ public class SelectSenteState : State
                 {
                     StateModule.Manager.ChangeCellsByBoardPiece(boardPos);
                     stateMachine.ChangeState(new SelectBoardState(stateMachine));
-                    return;
                 }
+                return;
             }
         }
 
-        // --- 先手持ち駒再選択 ---
+        // --- 先手持ち駒 ---
         if (BoardConverter.WorldToSenteHand(pos, out Vector2Int senteHandPos))
         {
             if (StateModule.Manager.SelectSentePiece(senteHandPos))
@@ -57,13 +63,14 @@ public class SelectSenteState : State
                 {
                     StateModule.Manager.ChangeCellsBySenteHandPiece(senteHandPos);
                     StateModule.Viewer.BuildSenteHand();
-                    StateModule.Viewer.BuildBoard();
+
+                    stateMachine.ChangeState(new SelectSenteState(stateMachine));
                 }
+                return;
             }
-            return;
         }
 
-        // --- 後手持ち駒 ---
+        // --- 後手持ち駒（再選択） ---
         if (BoardConverter.WorldToGoteHand(pos, out Vector2Int goteHandPos))
         {
             if (StateModule.Manager.SelectGotePiece(goteHandPos))
@@ -72,10 +79,9 @@ public class SelectSenteState : State
                 {
                     StateModule.Manager.ChangeCellsByGoteHandPiece(goteHandPos);
                     StateModule.Viewer.BuildGoteHand();
-
-                    stateMachine.ChangeState(new SelectGoteState(stateMachine));
-                    return;
+                    StateModule.Viewer.BuildBoard();
                 }
+                return;
             }
         }
     }

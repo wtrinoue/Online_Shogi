@@ -176,7 +176,7 @@ public static class StateModule
 
     public static class Judge
     {
-        public static bool IsGameOver(out Team winner)
+        public static bool IsEnd(out Team winner)
         {
             if(GameManager.Instance.IsGameOver(out Team win))
             {

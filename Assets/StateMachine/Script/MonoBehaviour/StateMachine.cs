@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class StateMachine : MonoBehaviour
 {
@@ -26,7 +27,8 @@ public class StateMachine : MonoBehaviour
     }
     public void Init()
     {
-        currentState = new TextState(this, $"{StateModule.Turn.GetCurrentTurn()}のターン", new IdleState(this));
+        // currentState = new TextState(this, $"{StateModule.Turn.GetCurrentTurn()}のターン", new IdleState(this));
+        currentState = new TimerTextState(this, $"{StateModule.Turn.GetCurrentTurn()}のターン", 1f, new IdleState(this));
         currentState.Enter();
     }
     void OnDisable()
@@ -45,5 +47,10 @@ public class StateMachine : MonoBehaviour
     public void OnClick(Vector2 pos)
     {
         currentState.OnClick(pos);
+    }
+
+    public void RunCoroutine(IEnumerator coroutine)
+    {
+        StartCoroutine(coroutine);
     }
 }

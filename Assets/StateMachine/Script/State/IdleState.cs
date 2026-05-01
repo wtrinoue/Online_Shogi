@@ -10,6 +10,10 @@ public class IdleState : State
 
         StateModule.Manager.ClearCells();
         StateModule.Viewer.BuildAll();
+        if(StateModule.Judge.IsEnd(out Team winner))
+        {
+            stateMachine.ChangeState(new EndState(stateMachine, winner));
+        }
     }
 
     public override void Exit()
