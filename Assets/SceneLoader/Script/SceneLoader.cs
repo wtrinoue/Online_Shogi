@@ -8,7 +8,6 @@ public class SceneLoader : MonoBehaviour
     {
         Title,
         LocalGame,
-        Result
     }
 
     private Dictionary<SceneType, string> sceneMap = new()
