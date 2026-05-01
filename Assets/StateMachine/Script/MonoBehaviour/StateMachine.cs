@@ -8,6 +8,7 @@ public class StateMachine : MonoBehaviour
 
     private IInputProvider inputAdapter;
     private State currentState;
+    public GameContext context;
 
     void Awake()
     {
