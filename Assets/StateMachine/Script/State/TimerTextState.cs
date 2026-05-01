@@ -18,14 +18,14 @@ public class TimerTextState : State
     public override void Enter()
     {
         Debug.Log("TimerTextStateに入りました");
-        TextManager.Instance.Show(message);
+        TextManager.Instance.ShowMessage(message);
         StateModule.Viewer.BuildAll();
         stateMachine.RunCoroutine(TimerCoroutine());
     }
 
     public override void Exit()
     {
-        TextManager.Instance.Hide();
+        TextManager.Instance.HideMessage();
     }
 
     public override void OnClick(Vector2 pos)

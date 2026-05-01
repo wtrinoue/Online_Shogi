@@ -165,12 +165,25 @@ public static class StateModule
     {
         public static void Show(string message)
         {
-            TextManager.Instance.Show(message);
+            TextManager.Instance.ShowMessage(message);
         }
 
         public static void Hide()
         {
-            TextManager.Instance.Hide();
+            TextManager.Instance.HideMessage();
+        }
+    }
+
+    public static class Result
+    {
+        public static void Show(string message)
+        {
+            TextManager.Instance.ShowResult(message);
+        }
+
+        public static void Hide()
+        {
+            TextManager.Instance.HideResult();
         }
     }
 

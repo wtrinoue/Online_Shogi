@@ -15,13 +15,13 @@ public class TextState : State
     public override void Enter()
     {
         Debug.Log("TextStateに入りました");
-        TextManager.Instance.Show(message);
+        TextManager.Instance.ShowMessage(message);
         StateModule.Viewer.BuildAll();
     }
 
     public override void Exit()
     {
-        TextManager.Instance.Hide();
+        TextManager.Instance.HideMessage();
     }
 
     public override void OnClick(Vector2 pos)
