@@ -10,7 +10,7 @@ GameManagerの責務について
 改善点について
 ・責務の分離がまだ甘いので、Common、Board、Sente、Goteで分離したほうがいいかもしれない。ネストクラスでもいいかも。
 */
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IGameManager
 {
     public static GameManager Instance { get; private set; }
 
