@@ -1525,6 +1525,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1945449738500828087, guid: 5951d0edd272d78489dd1d9e9a9f9cc7, type: 3}
+      propertyPath: mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1945449738500828087, guid: 5951d0edd272d78489dd1d9e9a9f9cc7, type: 3}
       propertyPath: inputObject
       value: 
       objectReference: {fileID: 546055292}

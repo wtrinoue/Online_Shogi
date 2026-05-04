@@ -9,12 +9,14 @@ public class GameContext
     public TextModule text;
     public ResultModule result;
     public JudgeModule judge;
+    public ModeModule mode;
 
     public GameContext(
-        StateMachine stateMachine, 
-        GameManager gameManager, 
-        GameViewer gameViewer, 
-        TextManager textManager)
+        StateMachine stateMachine,
+        GameManager gameManager,
+        GameViewer gameViewer,
+        TextManager textManager,
+        Mode initialMode)
     {
         this.machine = new MachineModule(stateMachine);
         this.manager = new ManagerModule(gameManager);
@@ -23,5 +25,6 @@ public class GameContext
         this.text = new TextModule(textManager);
         this.result = new ResultModule(textManager);
         this.judge = new JudgeModule(gameManager);
+        this.mode = new ModeModule(initialMode);
     }
 }

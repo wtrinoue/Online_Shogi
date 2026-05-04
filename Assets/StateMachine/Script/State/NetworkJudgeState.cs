@@ -8,6 +8,7 @@ public class NetworkJudgeState : State
 
     public override void Enter()
     {
+        Debug.Log("NetworkJudgeStateに入りました");
         if (context.judge.IsEnd(out Team winner))
         {
             context.machine.ChangeState(new EndState(context, winner));
