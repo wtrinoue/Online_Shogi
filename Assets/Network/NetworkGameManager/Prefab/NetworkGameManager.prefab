@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &210677800575315220
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7378178838073643766}
+  - component: {fileID: 4463337669882699217}
+  - component: {fileID: 5127536294854146470}
+  - component: {fileID: 6472023836334417245}
+  m_Layer: 0
+  m_Name: NetworkGameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7378178838073643766
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210677800575315220}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4463337669882699217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210677800575315220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ef4996e91d532a48a0e10784515af60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkGameManager
+  boardSetup: {fileID: 11400000, guid: 5ebd028c30dd1ce44ad6a7dfd65b1805, type: 2}
+  pieceFactory: {fileID: 6472023836334417245}
+--- !u!114 &5127536294854146470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210677800575315220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 2982743621
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 4463337669882699217}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &6472023836334417245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210677800575315220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3d6020bbeaece4d9304042de2d9266, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PieceFactory
+  pieceTable:
+  - type: 0
+    senteData: {fileID: 11400000, guid: 8b28e02d54741784082c26cb3bd2582e, type: 2}
+    goteData: {fileID: 11400000, guid: d0eb0f956a756b844931ed57745d708c, type: 2}
+  - type: 1
+    senteData: {fileID: 11400000, guid: b88b7f94667103a46ae86c0a47506f5b, type: 2}
+    goteData: {fileID: 11400000, guid: 93cc05d9215a69c4ca0fd1cfbfcf4c5f, type: 2}
+  - type: 2
+    senteData: {fileID: 11400000, guid: 02dd9c5757df5a74c82b17bbd8532056, type: 2}
+    goteData: {fileID: 11400000, guid: 170cdefa8ce39fd42b23b367f6cbb8d1, type: 2}
+  - type: 3
+    senteData: {fileID: 11400000, guid: 2f713bd67b2dfb84990a1b94b54fddfc, type: 2}
+    goteData: {fileID: 11400000, guid: 4625231cac90b1e4cb8e5d286e515691, type: 2}
+  - type: 4
+    senteData: {fileID: 11400000, guid: 9f58869f1e68ac54590ca6f6004c8941, type: 2}
+    goteData: {fileID: 11400000, guid: d8f6a66e4528c2945a965d2af0d239d1, type: 2}
+  - type: 5
+    senteData: {fileID: 11400000, guid: b82e3a3b8d9c649428cc4cdafc9a93e2, type: 2}
+    goteData: {fileID: 11400000, guid: ba8496369e40a8f42b9b84f1ad1752e8, type: 2}
+  - type: 6
+    senteData: {fileID: 11400000, guid: a8e0b696d352ec6469b0161e44673866, type: 2}
+    goteData: {fileID: 11400000, guid: 99803dba14271884fbdf059eaa3304d4, type: 2}
+  - type: 7
+    senteData: {fileID: 11400000, guid: abb60094a2c032b4b93e6024b22aa658, type: 2}
+    goteData: {fileID: 11400000, guid: f30dd4da441b6bf409b33589d45b1e32, type: 2}
