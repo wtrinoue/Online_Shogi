@@ -13,7 +13,7 @@ public class GameContext
 
     public GameContext(
         StateMachine stateMachine,
-        GameManager gameManager,
+        IGameManager gameManager,
         GameViewer gameViewer,
         TextManager textManager,
         Mode initialMode)

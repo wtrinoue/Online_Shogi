@@ -1,8 +1,8 @@
 public class JudgeModule
 {
-    private GameManager gm;
+    private IGameManager gm;
 
-    public JudgeModule(GameManager gm)
+    public JudgeModule(IGameManager gm)
     {
         this.gm = gm;
     }
