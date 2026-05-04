@@ -34,7 +34,7 @@ public class StateMachine : MonoBehaviour
     }
     public void Init()
     {
-        context = new GameContext(this, gameManager, GameViewer.Instance, TextManager.Instance, mode);
+        context = new GameContext(this, gameManager, gameViewer, textManager, mode);
         context.turn.SetTurn(Team.Sente);
         currentState = new TimerTextState(context, $"{context.turn.GetCurrentTurn()}のターン", 1f, new IdleState(context));
         currentState.Enter();

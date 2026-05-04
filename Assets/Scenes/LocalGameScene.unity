@@ -1527,6 +1527,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9208318461479712622, guid: 211b0030d13d0984fa4fd723e574fe84, type: 3}
+      propertyPath: gameManagerObject
+      value: 
+      objectReference: {fileID: 145653063}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1540,10 +1544,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1945449738500828087, guid: 5951d0edd272d78489dd1d9e9a9f9cc7, type: 3}
-      propertyPath: mode
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1945449738500828087, guid: 5951d0edd272d78489dd1d9e9a9f9cc7, type: 3}
       propertyPath: gameViewer
       value: 
