@@ -8,6 +8,7 @@ public class GoteEntryState : State
 
     public override void Enter()
     {
+        context.machine.ChangeState(new NetworkWaitState(context));
     }
 
     public override void Exit()

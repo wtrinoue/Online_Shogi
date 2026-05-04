@@ -20,7 +20,7 @@ public class JudgeState : State
                     context,
                     $"{context.turn.GetCurrentTurn()}のターン",
                     1f,
-                    new IdleState(context)
+                    new ModeState(context)
                 )
             );
         }

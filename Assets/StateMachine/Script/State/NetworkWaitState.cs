@@ -4,6 +4,7 @@ public class NetworkWaitState : State
 {
     public NetworkWaitState(GameContext context) : base(context)
     {
+        context.machine.ChangeState(new NetworkJudgeState(context));
     }
 
     public override void Enter()
