@@ -30,7 +30,10 @@ public class GameViewer : MonoBehaviour
         ReloadAllData();
         BuildAll();
     }
-
+    public void SetGameManager(IGameManager gm)
+    {
+        gameManager = gm;
+    }
     public void ReloadAllData()
     {
         // 参照渡しなので二度は必要ない可能性がある。

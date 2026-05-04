@@ -163,8 +163,22 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     public void Init()
     {
         if (!Object.HasStateAuthority) return;
+        Debug.Log("NetworkGameManagerでInitしました");
         InitializePiece();
         InitializeCell();
+        DebugPrintPieceBoard();
+        var board = GetPieceBoard();
+
+        int nullCount = 0;
+
+        for (int y = 0; y < 9; y++)
+        for (int x = 0; x < 9; x++)
+        {
+            if (board[x, y] == null)
+                nullCount++;
+        }
+
+        Debug.Log("Null pieces: " + nullCount);
     }
 
     public void InitializePiece()
@@ -461,7 +475,12 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     private Piece ToLocal(NetworkPieceData d)
     {
         if (d.Type == 0) return null;
-        return new Piece(new PieceData { team = d.Team, type = d.Type }, d.IsPromoted);
+
+        var data = ScriptableObject.CreateInstance<PieceData>();
+        data.team = d.Team;
+        data.type = d.Type;
+
+        return new Piece(data, d.IsPromoted);
     }
 
     private NetworkPieceData ToNetwork(Piece p)
@@ -478,7 +497,33 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // =========================
     // Debug / Game Over
     // =========================
-    public void DebugPrintPieceBoard() { }
+    public void DebugPrintPieceBoard()
+    {
+        Debug.Log("===== PieceBoard =====");
+
+        for (int y = 0; y < 9; y++)
+        {
+            string line = "";
+
+            for (int x = 0; x < 9; x++)
+            {
+                var p = PieceBoard[ToIndex(new Vector2Int(x, y))];
+
+                if (p.Type == 0)
+                {
+                    line += " . ";
+                }
+                else
+                {
+                    string t = p.Team == Team.Sente ? "S" : "G";
+                    string pr = p.IsPromoted ? "+" : "";
+                    line += $"{t}{(int)p.Type}{pr} ";
+                }
+            }
+
+            Debug.Log(line);
+        }
+    }
     public void DebugPrintCellBoard() { }
 
     public bool IsGameOver(out Team winner)

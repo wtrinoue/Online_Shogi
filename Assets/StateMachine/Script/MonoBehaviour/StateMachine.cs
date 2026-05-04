@@ -45,6 +45,11 @@ public class StateMachine : MonoBehaviour
             inputAdapter.OnClickEvent -= OnClick;
     }
 
+    public void SetGameManager(IGameManager gm)
+    {
+        gameManager = gm;
+    }
+
     public void ChangeState(State state)
     {
         currentState.Exit();
