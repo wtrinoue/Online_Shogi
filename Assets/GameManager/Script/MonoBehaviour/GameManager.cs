@@ -12,7 +12,6 @@ GameManagerの責務について
 */
 public class GameManager : MonoBehaviour, IGameManager
 {
-    public static GameManager Instance { get; private set; }
 
     public BoardSetup boardSetup;
     public PieceFactory pieceFactory;
@@ -31,13 +30,6 @@ public class GameManager : MonoBehaviour, IGameManager
 
     void Awake()
     {
-        Debug.Log("Awake called");
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
         Debug.Log("GameManager Awake: Instance set");
     }
     public void Init()

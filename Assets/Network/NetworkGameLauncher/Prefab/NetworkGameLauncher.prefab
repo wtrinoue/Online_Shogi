@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8565549420634045847
+--- !u!1 &2207293951784797347
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5055419931570377454}
-  - component: {fileID: 1945449738500828087}
+  - component: {fileID: 1140755439024840307}
+  - component: {fileID: 1119979427739639637}
   m_Layer: 0
-  m_Name: StateMachine
+  m_Name: NetworkGameLauncher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5055419931570377454
+--- !u!4 &1140755439024840307
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8565549420634045847}
+  m_GameObject: {fileID: 2207293951784797347}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,21 +32,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1945449738500828087
+--- !u!114 &1119979427739639637
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8565549420634045847}
+  m_GameObject: {fileID: 2207293951784797347}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 519d2d651adb1a24b8beed1f37a1fa13, type: 3}
+  m_Script: {fileID: 11500000, guid: 744388c6b0ba7db439f5c4212e2fc4fc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StateMachine
-  inputObject: {fileID: 0}
-  boardConfig: {fileID: 11400000, guid: 3b5f2184557465846ac18fe0a1ab3776, type: 2}
-  gameManagerObject: {fileID: 0}
-  gameViewer: {fileID: 0}
-  textManager: {fileID: 0}
-  mode: 1
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkGameLauncher
+  runnerPrefab: {fileID: 8558689763732597268, guid: f233f49d5bafd8b4599ca2b3d74b2b35, type: 3}
+  networkGameManagerPrefab:
+    RawGuidValue: fd03487a7eb5466488e4e87c4f4241d8

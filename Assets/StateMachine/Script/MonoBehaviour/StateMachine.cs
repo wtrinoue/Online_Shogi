@@ -5,6 +5,11 @@ public class StateMachine : MonoBehaviour
 {
     [SerializeField] private GameObject inputObject;
     [SerializeField] private BoardConfig boardConfig;
+    [SerializeField] private GameObject gameManagerObject;
+    [SerializeField] private GameViewer gameViewer;
+    [SerializeField] private TextManager textManager;
+    [SerializeField] private Mode mode;
+    private IGameManager gameManager;
 
     private IInputProvider inputAdapter;
     private State currentState;
@@ -13,6 +18,7 @@ public class StateMachine : MonoBehaviour
     void Awake()
     {
         inputAdapter = inputObject.GetComponent<IInputProvider>();
+        gameManager = gameManagerObject.GetComponent<IGameManager>();
 
         if (inputAdapter == null)
         {
@@ -28,7 +34,7 @@ public class StateMachine : MonoBehaviour
     }
     public void Init()
     {
-        context = new GameContext(this, GameManager.Instance, GameViewer.Instance, TextManager.Instance);
+        context = new GameContext(this, gameManager, gameViewer, textManager, mode);
         context.turn.SetTurn(Team.Sente);
         currentState = new TimerTextState(context, $"{context.turn.GetCurrentTurn()}のターン", 1f, new IdleState(context));
         currentState.Enter();
@@ -37,6 +43,11 @@ public class StateMachine : MonoBehaviour
     {
         if (inputAdapter != null)
             inputAdapter.OnClickEvent -= OnClick;
+    }
+
+    public void SetGameManager(IGameManager gm)
+    {
+        gameManager = gm;
     }
 
     public void ChangeState(State state)

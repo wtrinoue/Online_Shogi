@@ -15,14 +15,7 @@ public class JudgeState : State
         }
         else
         {
-            context.machine.ChangeState(
-                new TimerTextState(
-                    context,
-                    $"{context.turn.GetCurrentTurn()}のターン",
-                    1f,
-                    new IdleState(context)
-                )
-            );
+            context.machine.ChangeState(new ModeState(context));
         }
     }
 

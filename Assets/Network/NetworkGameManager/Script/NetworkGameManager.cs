@@ -35,15 +35,150 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     private Vector2Int selectedSenteHandPos;
     private Vector2Int selectedGoteHandPos;
     private Piece selectedPiece;
+    // =========================
+    // RPC
+    // =========================
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_MovePieceFromBoard(int fi, int ti)
+    {
+        var piece = PieceBoard[fi];
 
+        PieceBoard.Set(ti, piece);
+        PieceBoard.Set(fi, default);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_MovePieceFromSenteHand(int fromIndex, int toIndex)
+    {
+        var piece = SenteHandPiece[fromIndex];
+
+        RPC_SenteRemovePiece(fromIndex);
+
+        PieceBoard.Set(toIndex, piece);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_MovePieceFromGoteHand(int fromIndex, int toIndex)
+    {
+        var piece = GoteHandPiece[fromIndex];
+
+        RPC_GoteRemovePiece(fromIndex);
+
+        PieceBoard.Set(toIndex, piece);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_SetBoardCells(Vector2Int[] positions, CellState state)
+    {
+        foreach (var p in positions)
+        {
+            int i = ToIndex(p);
+
+            var c = CellBoard[i];
+            c.State = state;
+
+            CellBoard.Set(i, c);
+        }
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_SetSenteHandCells(Vector2Int[] positions, CellState state)
+    {
+        foreach (var p in positions)
+        {
+            int i = ToHandIndex(p);
+
+            var c = SenteHandCell[i];
+            c.State = state;
+
+            SenteHandCell.Set(i, c);
+        }
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_SetGoteHandCells(Vector2Int[] positions, CellState state)
+    {
+        foreach (var p in positions)
+        {
+            int i = ToHandIndex(p);
+
+            var c = GoteHandCell[i];
+            c.State = state;
+
+            GoteHandCell.Set(i, c);
+        }
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_SenteAddPiece(NetworkPieceData piece)
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            if (SenteHandPiece[i].Type == 0)
+            {
+                SenteHandPiece.Set(i, piece);
+                return;
+            }
+        }
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_SenteRemovePiece(int index)
+    {
+        for (int i = index; i < 19; i++)
+        {
+            SenteHandPiece.Set(i, SenteHandPiece[i + 1]);
+        }
+
+        SenteHandPiece.Set(19, default);
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_GoteAddPiece(NetworkPieceData piece)
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            if (GoteHandPiece[i].Type == 0)
+            {
+                GoteHandPiece.Set(i, piece);
+                return;
+            }
+        }
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_GoteRemovePiece(int index)
+    {
+        for (int i = index; i < 19; i++)
+        {
+            GoteHandPiece.Set(i, GoteHandPiece[i + 1]);
+        }
+
+        GoteHandPiece.Set(19, default);
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_PromotePiece(int index)
+    {
+        var p = PieceBoard[index];
+        p.IsPromoted = true;
+        PieceBoard.Set(index, p);
+    }
     // =========================
     // Init
     // =========================
     public void Init()
     {
         if (!Object.HasStateAuthority) return;
+        Debug.Log("NetworkGameManagerでInitしました");
         InitializePiece();
         InitializeCell();
+        DebugPrintPieceBoard();
+        var board = GetPieceBoard();
+
+        int nullCount = 0;
+
+        for (int y = 0; y < 9; y++)
+        for (int x = 0; x < 9; x++)
+        {
+            if (board[x, y] == null)
+                nullCount++;
+        }
+
+        Debug.Log("Null pieces: " + nullCount);
     }
 
     public void InitializePiece()
@@ -87,13 +222,11 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // =========================
     // Promote
     // =========================
-
     public void PromotePiece(Vector2Int pos)
     {
         int i = ToIndex(pos);
-        var p = PieceBoard[i];
-        p.IsPromoted = true;
-        PieceBoard.Set(i, p);
+
+        RPC_PromotePiece(i);
     }
 
     public bool IsPromotable(Vector2Int pos)
@@ -110,16 +243,14 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // =========================
     public Piece MovePieceFromBoard(Vector2Int from, Vector2Int to)
     {
+        var target = GetBoardPiece(to);
+
         int fi = ToIndex(from);
         int ti = ToIndex(to);
 
-        var piece = PieceBoard[fi];
-        var target = PieceBoard[ti];
+        RPC_MovePieceFromBoard(fi, ti);
 
-        PieceBoard.Set(ti, piece);
-        PieceBoard.Set(fi, default);
-
-        return ToLocal(target);
+        return target;
     }
 
     // =========================
@@ -127,24 +258,28 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // =========================
     public Piece MovePieceFromSenteHand(Vector2Int from, Vector2Int to)
     {
-        int i = ToHandIndex(from);
-        var piece = SenteHandPiece[i];
+        int fi = ToHandIndex(from);
+        int ti = ToIndex(to);
 
-        SenteHandPiece.Set(i, default);
-        PieceBoard.Set(ToIndex(to), piece);
+        var piece = SenteHandPiece[fi];
+        var localPiece = ToLocal(piece);
 
-        return ToLocal(piece);
+        RPC_MovePieceFromSenteHand(fi, ti);
+
+        return localPiece;
     }
 
     public Piece MovePieceFromGoteHand(Vector2Int from, Vector2Int to)
     {
-        int i = ToHandIndex(from);
-        var piece = GoteHandPiece[i];
+        int fi = ToHandIndex(from);
+        int ti = ToIndex(to);
 
-        GoteHandPiece.Set(i, default);
-        PieceBoard.Set(ToIndex(to), piece);
+        var piece = GoteHandPiece[fi];
+        var localPiece = ToLocal(piece);
 
-        return ToLocal(piece);
+        RPC_MovePieceFromGoteHand(fi, ti);
+
+        return localPiece;
     }
 
     // =========================
@@ -162,7 +297,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
             {
                 if (SenteHandPiece[i].Type == 0)
                 {
-                    SenteHandPiece.Set(i, data);
+                    RPC_SenteAddPiece(data);
                     return;
                 }
             }
@@ -173,7 +308,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
             {
                 if (GoteHandPiece[i].Type == 0)
                 {
-                    GoteHandPiece.Set(i, data);
+                    RPC_GoteAddPiece(data);
                     return;
                 }
             }
@@ -194,47 +329,33 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // =========================
     public void ClearCells()
     {
-        for (int i = 0; i < 81; i++)
-        {
-            var c = CellBoard[i];
-            c.State = CellState.Normal;
-            CellBoard.Set(i, c);
-        }
+        var list = new List<Vector2Int>();
+
+        for (int y = 0; y < 9; y++)
+        for (int x = 0; x < 9; x++)
+            list.Add(new Vector2Int(x, y));
+
+        RPC_SetBoardCells(list.ToArray(), CellState.Normal);
     }
 
     public void ChangeBoardCells(List<Vector2Int> posList)
     {
-        foreach (var p in posList)
-        {
-            int i = ToIndex(p);
-            var c = CellBoard[i];
-            c.State = CellState.Placeable;
-            CellBoard.Set(i, c);
-        }
+        RPC_SetBoardCells(posList.ToArray(), CellState.Placeable);
     }
 
     public void ChangeBoardCellSelected(Vector2Int pos)
     {
-        int i = ToIndex(pos);
-        var c = CellBoard[i];
-        c.State = CellState.Selected;
-        CellBoard.Set(i, c);
+        RPC_SetBoardCells(new[] { pos }, CellState.Selected);
     }
 
     public void ChangeSenteHandCellSelected(Vector2Int pos)
     {
-        int i = ToHandIndex(pos);
-        var c = SenteHandCell[i];
-        c.State = CellState.Selected;
-        SenteHandCell.Set(i, c);
+        RPC_SetSenteHandCells(new[] { pos }, CellState.Selected);
     }
 
     public void ChangeGoteHandCellSelected(Vector2Int pos)
     {
-        int i = ToHandIndex(pos);
-        var c = GoteHandCell[i];
-        c.State = CellState.Selected;
-        GoteHandCell.Set(i, c);
+        RPC_SetGoteHandCells(new[] { pos }, CellState.Selected);
     }
 
     // =========================
@@ -354,7 +475,12 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     private Piece ToLocal(NetworkPieceData d)
     {
         if (d.Type == 0) return null;
-        return new Piece(new PieceData { team = d.Team, type = d.Type }, d.IsPromoted);
+
+        var data = ScriptableObject.CreateInstance<PieceData>();
+        data.team = d.Team;
+        data.type = d.Type;
+
+        return new Piece(data, d.IsPromoted);
     }
 
     private NetworkPieceData ToNetwork(Piece p)
@@ -371,7 +497,33 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // =========================
     // Debug / Game Over
     // =========================
-    public void DebugPrintPieceBoard() { }
+    public void DebugPrintPieceBoard()
+    {
+        Debug.Log("===== PieceBoard =====");
+
+        for (int y = 0; y < 9; y++)
+        {
+            string line = "";
+
+            for (int x = 0; x < 9; x++)
+            {
+                var p = PieceBoard[ToIndex(new Vector2Int(x, y))];
+
+                if (p.Type == 0)
+                {
+                    line += " . ";
+                }
+                else
+                {
+                    string t = p.Team == Team.Sente ? "S" : "G";
+                    string pr = p.IsPromoted ? "+" : "";
+                    line += $"{t}{(int)p.Type}{pr} ";
+                }
+            }
+
+            Debug.Log(line);
+        }
+    }
     public void DebugPrintCellBoard() { }
 
     public bool IsGameOver(out Team winner)

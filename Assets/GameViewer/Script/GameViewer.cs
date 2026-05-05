@@ -3,10 +3,11 @@ using UnityEngine;
 
 public class GameViewer : MonoBehaviour
 {
-    public static GameViewer Instance;
     public PieceView pieceViewPrefab;
     public CellView cellViewPrefab;
     public BoardConfig boardConfig;
+    public GameObject gameManagerObject;
+    private IGameManager gameManager;
     private Vector3 boardStartPos = new Vector3(0f, 0f, 0f);
     private Vector3 senteHandStartPos = new Vector3(0f, 0f, 0f);
     private Vector3 goteHandStartPos = new Vector3(0f, 0f, 0f);
@@ -16,27 +17,23 @@ public class GameViewer : MonoBehaviour
     private Cell[,] senteHandCells = new Cell[2,10];
     private List<Piece> goteHandPieces = new List<Piece>();
     private Cell[,] goteHandCells = new Cell[2,10];
-    private GameManager gameManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
+        gameManager = gameManagerObject.GetComponent<IGameManager>();
         boardStartPos = boardConfig.boardOffset;
         senteHandStartPos = boardConfig.senteHandOffset;
         goteHandStartPos = boardConfig.goteHandOffset;
     }
     public void Init()
     {
-        gameManager = GameManager.Instance;
         ReloadAllData();
         BuildAll();
     }
-
+    public void SetGameManager(IGameManager gm)
+    {
+        gameManager = gm;
+    }
     public void ReloadAllData()
     {
         // 参照渡しなので二度は必要ない可能性がある。

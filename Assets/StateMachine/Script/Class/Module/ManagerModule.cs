@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 public class ManagerModule
 {
-    private GameManager gm;
+    private IGameManager gm;
 
-    public ManagerModule(GameManager gm)
+    public ManagerModule(IGameManager gm)
     {
         this.gm = gm;
     }
