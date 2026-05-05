@@ -72,10 +72,20 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
   - ゲームモードに応じて次の状態を決定します。
   - ローカルモードなら `TimerTextState` を経て `IdleState` に戻ります。
   - ネットワークモードなら `NetworkWaitState` へ遷移します。
+- `Assets/StateMachine/Script/State/NetworkWaitState.cs`
+  - ネットワーク対戦時に相手の手を待つ状態です。
+- `Assets/StateMachine/Script/State/NetworkJudgeState.cs`
+  - ネットワーク対戦で勝敗判定を行い、続行なら次ターン表示へ遷移します。
 - `Assets/StateMachine/Script/State/TimerTextState.cs`
   - 文字メッセージを表示し、指定時間後に次の状態へ遷移します。
 - `Assets/StateMachine/Script/State/EndState.cs`
   - 勝者表示を行う終了状態です。
+- `Assets/StateMachine/Script/State/TextState.cs`
+  - クリックで次状態に遷移する汎用メッセージ状態です（現状では未使用）。
+- `Assets/StateMachine/Script/State/SenteEntryState.cs`
+  - 先手ターン開始時に `TimerTextState` へ遷移する実装があります（現状では未使用）。
+- `Assets/StateMachine/Script/State/GoteEntryState.cs`
+  - ネットワーク対戦の接続待ち開始状態です（現状では未使用）。
 
 ### 共通コンテキスト
 
@@ -95,7 +105,7 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
 4. `IdleState` で駒選択を待ち、ユーザーのクリックに応じて `SelectBoardState` / `SelectSenteState` / `SelectGoteState` へ移動
 5. 選択状態で駒移動・打ち込みが完了したら `JudgeState` に遷移し、勝敗判定を実行
 6. 勝者が決まれば `EndState` へ、続行なら `ModeState` へ移行
-7. `ModeState` でモードを判定し、ローカルなら再び `TimerTextState` から `IdleState` へ戻る
+7. `ModeState` でモードを判定し、ローカルなら再び `TimerTextState` から `IdleState` へ戻り、ネットワークなら `NetworkWaitState` へ移行
 
 ### 状態遷移図
 
@@ -117,6 +127,9 @@ stateDiagram-v2
     JudgeState --> ModeState: 続行
     ModeState --> TimerTextState: ローカルモード
     ModeState --> NetworkWaitState: ネットワークモード
+    NetworkWaitState --> NetworkJudgeState: 相手待ち完了
+    NetworkJudgeState --> EndState: 終了判定成立
+    NetworkJudgeState --> TimerTextState: 続行
 ```
 
 ## 重要な設計ポイント
@@ -126,6 +139,24 @@ stateDiagram-v2
 - `GameViewer` は描画を担当し、ロジックを持ちません。
 - `TimerTextState` により、ターン開始時の一時停止表示が実現されています。
 - `JudgeState` で勝敗を判定し、`EndState` もしくは再開ルートへ分岐します。
+
+## 開発の歩み（Git履歴からの工程）
+
+1. プロジェクト初期段階で基本的な将棋操作の制御を追加し、駒の選択や移動の基礎を作りました。
+2. ゲームループと状態管理の必要性を整理し、`StateMachine` による遷移の骨格を構築しました。
+3. `State` の抽象化を進め、`IState` から `State` クラスへのリファクタリングで状態実装を統一しました。
+4. 盤面クリックや持ち駒選択を扱う `SelectState` を導入し、選択／移動フローを明確化しました。
+5. `GameContext` を導入して、`GameManager`／`GameViewer`／`TextManager` などの共有依存を状態間で安全に渡せるようにしました。
+6. 結果表示機能を追加し、`TextManager` と `EndState` で勝利メッセージ表示が行えるようにしました。
+7. `JudgeState` を追加し、手番終了後の勝敗判定と進行分岐の仕組みを実装しました。
+8. ターン開始時の表示として `TimerTextState` を導入し、次状態への遷移を時間制御できるようにしました。
+9. `ModeModule` を追加し、ローカルとネットワークの切り替えを `ModeState` で判定する構成にしました。
+10. `IGameManager` インターフェースを導入し、ゲーム管理の実装を抽象化してテストや拡張をしやすくしました。
+11. `Photon Fusion` とネットワークオブジェクトを追加して、オンライン対戦の基盤を整備しました。
+12. `NetworkGameManager` と `NetworkWaitState` / `NetworkJudgeState` を追加し、ネットワーク対戦時の状態遷移フローを実装しました。
+13. `Singleton` パターンを廃止して依存注入型に再設計し、`GameManager`／`GameViewer`／`TextManager` の責務を明確化しました。
+14. ビルド設定に `LocalGameScene` を追加し、ローカルゲームシーンを含む実行環境を整えました。
+15. ネットワーク状態群と `README` を更新し、現在の設計と遷移図を反映しました。
 
 ## 今後の拡張候補
 
