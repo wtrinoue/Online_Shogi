@@ -92,14 +92,11 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RPC_SetBoardCells(Vector2Int[] positions, CellState state)
+    private void RPC_SetBoardCells(int[] indices, CellState state)
     {
         Debug.Log("RPC_SetBoardCells");
-        foreach (var p in positions)
+        foreach (var i in indices)
         {
-            // Debug.Log(p);
-            int i = ToIndex(p);
-
             var c = CellBoard[i];
             c.State = state;
 
@@ -107,12 +104,10 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         }
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RPC_SetSenteHandCells(Vector2Int[] positions, CellState state)
+    private void RPC_SetSenteHandCells(int[] indices, CellState state)
     {
-        foreach (var p in positions)
+        foreach (var i in indices)
         {
-            int i = ToHandIndex(p);
-
             var c = SenteHandCell[i];
             c.State = state;
 
@@ -120,12 +115,10 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         }
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RPC_SetGoteHandCells(Vector2Int[] positions, CellState state)
+    private void RPC_SetGoteHandCells(int[] indices, CellState state)
     {
-        foreach (var p in positions)
+        foreach (var i in indices)
         {
-            int i = ToHandIndex(p);
-
             var c = GoteHandCell[i];
             c.State = state;
 
@@ -396,55 +389,59 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         // =========================
         // 盤面（9x9）
         // =========================
-        var boardList = new List<Vector2Int>();
+        var boardList = new List<int>();
 
         for (int y = 0; y < 9; y++)
         for (int x = 0; x < 9; x++)
-            boardList.Add(new Vector2Int(x, y));
+            boardList.Add(ToIndex(new Vector2Int(x, y)));
 
         RPC_SetBoardCells(boardList.ToArray(), CellState.Normal);
 
         // =========================
         // 先手持ち駒（2x10想定）
         // =========================
-        var senteList = new List<Vector2Int>();
+        var senteList = new List<int>();
 
         for (int y = 0; y < 10; y++)
         for (int x = 0; x < 2; x++)
-            senteList.Add(new Vector2Int(x, y));
+            senteList.Add(ToHandIndex(new Vector2Int(x, y)));
 
         RPC_SetSenteHandCells(senteList.ToArray(), CellState.Normal);
 
         // =========================
         // 後手持ち駒（2x10想定）
         // =========================
-        var goteList = new List<Vector2Int>();
+        var goteList = new List<int>();
 
         for (int y = 0; y < 10; y++)
         for (int x = 0; x < 2; x++)
-            goteList.Add(new Vector2Int(x, y));
+            goteList.Add(ToHandIndex(new Vector2Int(x, y)));
 
         RPC_SetGoteHandCells(goteList.ToArray(), CellState.Normal);
     }
 
     public void ChangeBoardCells(List<Vector2Int> posList)
     {
-        RPC_SetBoardCells(posList.ToArray(), CellState.Placeable);
+        var indices = new int[posList.Count];
+        for (int i = 0; i < posList.Count; i++)
+            indices[i] = ToIndex(posList[i]);
+
+        RPC_SetBoardCells(indices, CellState.Placeable);
     }
 
     public void ChangeBoardCellSelected(Vector2Int pos)
     {
-        RPC_SetBoardCells(new[] { pos }, CellState.Selected);
+        RPC_SetBoardCells(new[] { ToIndex(pos) }, CellState.Selected);
     }
 
     public void ChangeSenteHandCellSelected(Vector2Int pos)
     {
-        RPC_SetSenteHandCells(new[] { pos }, CellState.Selected);
+        RPC_SetSenteHandCells(new[] { ToHandIndex(pos) }, CellState.Selected);
     }
 
     public void ChangeGoteHandCellSelected(Vector2Int pos)
     {
-        RPC_SetGoteHandCells(new[] { pos }, CellState.Selected);
+        RPC_SetGoteHandCells(new[] { ToHandIndex(pos) }, CellState.Selected);
     }
 
     // =========================
