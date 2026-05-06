@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SenteKaku
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
   team: 0
-  type: 3
+  type: 4
   normalSprite: {fileID: -6930793143504519088, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   promotedSprite: {fileID: -6281795058404755841, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   normalMove:

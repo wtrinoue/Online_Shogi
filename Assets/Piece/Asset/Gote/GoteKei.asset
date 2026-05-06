@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GoteKei
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
   team: 1
-  type: 4
+  type: 5
   normalSprite: {fileID: 670039704997269070, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   promotedSprite: {fileID: 5523575952069111539, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   normalMove:

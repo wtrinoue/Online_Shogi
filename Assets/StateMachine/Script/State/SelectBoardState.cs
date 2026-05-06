@@ -23,7 +23,6 @@ public class SelectBoardState : State
             if (context.manager.IsPlaceable(boardPos))
             {
                 context.manager.MoveFromBoard(boardPos);
-                context.turn.ChangeTurn();
                 context.manager.ClearCells();
 
                 context.machine.ChangeState(new JudgeState(context));

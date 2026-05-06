@@ -8,6 +8,7 @@ public class SenteEntryState : State
 
     public override void Enter()
     {
+        Debug.Log("SenteEntryStateに入りました");
         context.turn.SetTurn(Team.Sente);
         context.machine.ChangeState(
             new TimerTextState(

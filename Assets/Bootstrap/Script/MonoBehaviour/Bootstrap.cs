@@ -11,16 +11,9 @@ public class Bootstrap : MonoBehaviour
     {
         Init();
     }
-    public void SetGameManager(IGameManager gm)
-    {
-        gameManager = gm;
-    }
     public void Init()
     {
-        if(gameManagerObject != null)
-        {
-            gameManager = gameManagerObject.GetComponent<IGameManager>();
-        }
+        gameManager = gameManagerObject.GetComponent<IGameManager>();
         gameManager.Init();
         gameViewer.Init();
         stateMachine.Init();

@@ -9,12 +9,15 @@ public class JudgeState : State
     public override void Enter()
     {
         Debug.Log("JudgeStateに入りました");
+        context.manager.ClearCells();
+        context.viewer.BuildAll();
         if (context.judge.IsEnd(out Team winner))
         {
             context.machine.ChangeState(new EndState(context, winner));
         }
         else
         {
+            context.turn.ChangeTurn();
             context.machine.ChangeState(new ModeState(context));
         }
     }

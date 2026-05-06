@@ -506,12 +506,6 @@ public class GameManager : MonoBehaviour, IGameManager
     // -------------------------
     // ゲームの判定
     // -------------------------
-    enum GameState
-    {
-        Playing,
-        SenteWin,
-        GoteWin
-    }
     private GameState gameState = GameState.Playing;
     private void ChangeGameState(GameState newState)
     {
@@ -535,4 +529,27 @@ public class GameManager : MonoBehaviour, IGameManager
                 return false;
         }
     }
+
+    private int moveSignal = 0;
+    private Team lastMovedTeam = Team.Sente;
+
+    // 以下NetworkGameManger用なのでダミー
+    public void SignalMove(Team movedTeam)
+    {
+        moveSignal++;
+        lastMovedTeam = movedTeam;
+    }
+
+    public int GetMoveSignal()
+    {
+        return moveSignal;
+    }
+
+    public Team GetLastMovedTeam()
+    {
+        return lastMovedTeam;
+    }
+
+    public void ChangeIsMovedTo(bool isMoved){}
+    public bool GetIsMoved(){return true;}
 }

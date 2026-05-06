@@ -142,4 +142,22 @@ public class ManagerModule
     {
         gm.ClearCells();
     }
+    // =========================
+    // ネットワーク対戦用(State更新用)
+    // =========================
+
+    public int GetMoveSignal()
+    {
+        return gm.GetMoveSignal();
+    }
+
+    public void SignalMove(Team movedTeam)
+    {
+        gm.SignalMove(movedTeam);
+    }
+
+    public Team GetLastMovedTeam()
+    {
+        return gm.GetLastMovedTeam();
+    }
 }

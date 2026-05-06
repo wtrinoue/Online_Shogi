@@ -10,14 +10,15 @@ public class PieceData : ScriptableObject
     public MovePattern promotedMove;
 }
 
-public enum Team
+public enum Team : byte
 {
-    Sente,
-    Gote
+    Sente = 0,
+    Gote = 1
 }
 
-public enum PieceType
+public enum PieceType : byte
 {
+    None = 0,
     Fu,      // 歩
     Gin,     // 銀
     Hisha,   // 飛

@@ -36,7 +36,20 @@ public class StateMachine : MonoBehaviour
     {
         context = new GameContext(this, gameManager, gameViewer, textManager, mode);
         context.turn.SetTurn(Team.Sente);
-        currentState = new TimerTextState(context, $"{context.turn.GetCurrentTurn()}のターン", 1f, new IdleState(context));
+        currentState = new SenteEntryState(context);
+        currentState.Enter();
+    }
+    public void SenteInit()
+    {
+        context = new GameContext(this, gameManager, gameViewer, textManager, mode);
+        currentState = new SenteEntryState(context);
+        currentState.Enter(); 
+    }
+
+    public void GoteInit()
+    {
+        context = new GameContext(this, gameManager, gameViewer, textManager, mode);
+        currentState = new TimerTextState(context, $"{context.turn.GetCurrentTurn()}のターン", 1f, new GoteEntryState(context));
         currentState.Enter();
     }
     void OnDisable()

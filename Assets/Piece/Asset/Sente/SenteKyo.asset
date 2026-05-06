@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SenteKyo
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
   team: 0
-  type: 6
+  type: 7
   normalSprite: {fileID: 1458753998446041006, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   promotedSprite: {fileID: 5112729089556995633, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   normalMove:
