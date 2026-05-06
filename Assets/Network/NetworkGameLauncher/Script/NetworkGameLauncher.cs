@@ -14,6 +14,7 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
 
     private NetworkRunner runner;
     private NetworkGameManager networkGameManager;
+    private bool isInitialized = false;
 
     private async void Start()
     {
@@ -31,29 +32,61 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
      void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
      void INetworkRunnerCallbacks.OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
     // =========================
-    // 参加時：カウンター生成（1つだけ）
+    // 参加時：ゲームマネージャをホストで生成し、2人揃ったら開始
     // =========================
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.ActivePlayers.Count() == 1)
+        int count = runner.ActivePlayers.Count();
+
+        if (count == 1)
         {
-            Debug.Log("一番目に実行しました");
-            OnFirstPlayerJoined(runner, player);
+            Debug.Log("一番目に実行しました（Sente確定）");
+            if (runner.IsServer)
+            {
+                OnFirstPlayerJoined(runner, player);
+            }
         }
-        else if (runner.ActivePlayers.Count() == 2)
+        else if (count == 2)
         {
-            Debug.Log("二番目に実行しました");
+            Debug.Log("二番目に実行しました（Gote確定）");
             OnSecondPlayerJoined(runner, player);
         }
     }
+
     public void OnFirstPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         var net = runner.Spawn(networkGameManagerPrefab, Vector3.zero, Quaternion.identity);
         networkGameManager = net.GetComponent<NetworkGameManager>();
+        networkGameManager.SentePlayer = player;
+        networkGameManager.Init();
     }
+
     public void OnSecondPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         if (runner.IsServer)
+        {
+            networkGameManager.GotePlayer = player;
+            StartCoroutine(WaitForGameStart(true));
+        }
+        else
+        {
+            StartCoroutine(WaitForGameStart(false));
+        }
+    }
+
+    private System.Collections.IEnumerator WaitForGameStart(bool isHost)
+    {
+        while (networkGameManager == null)
+        {
+            networkGameManager = FindObjectOfType<NetworkGameManager>();
+            if (networkGameManager != null)
+                break;
+            yield return null;
+        }
+
+        yield return null;
+
+        if (isHost)
         {
             stateMachine.SenteInit();
         }
@@ -62,7 +95,15 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
             stateMachine.GoteInit();
         }
     }
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {}
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+        Debug.Log("プレイヤーが退出");
+
+        if (runner.IsServer)
+        {
+            // 相手が消えた → 勝利扱いなど
+        }
+    }
 
     // =========================
     // 入力送信
@@ -72,7 +113,12 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
      void INetworkRunnerCallbacks.OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}
      void INetworkRunnerCallbacks.OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) {}
      void INetworkRunnerCallbacks.OnConnectedToServer(NetworkRunner runner) {}
-     void INetworkRunnerCallbacks.OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) {}
+     void INetworkRunnerCallbacks.OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        Debug.Log("切断されました: " + reason);
+
+        // UI表示やState変更
+    }
      void INetworkRunnerCallbacks.OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
      void INetworkRunnerCallbacks.OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) {}
      void INetworkRunnerCallbacks.OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) {}

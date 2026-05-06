@@ -30,6 +30,12 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     [Networked]
     public bool IsMoved { get; set; }
 
+    [Networked]
+    public PlayerRef SentePlayer { get; set; }
+
+    [Networked]
+    public PlayerRef GotePlayer { get; set; }
+
     // =========================
     // Local View State
     // =========================
