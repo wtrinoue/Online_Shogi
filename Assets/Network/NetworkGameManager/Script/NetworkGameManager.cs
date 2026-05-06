@@ -73,7 +73,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         Debug.Log("RPC_SetBoardCells");
         foreach (var p in positions)
         {
-            Debug.Log(p);
+            // Debug.Log(p);
             int i = ToIndex(p);
 
             var c = CellBoard[i];
@@ -331,13 +331,38 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // =========================
     public void ClearCells()
     {
-        var list = new List<Vector2Int>();
+        // =========================
+        // 盤面（9x9）
+        // =========================
+        var boardList = new List<Vector2Int>();
 
         for (int y = 0; y < 9; y++)
         for (int x = 0; x < 9; x++)
-            list.Add(new Vector2Int(x, y));
+            boardList.Add(new Vector2Int(x, y));
 
-        RPC_SetBoardCells(list.ToArray(), CellState.Normal);
+        RPC_SetBoardCells(boardList.ToArray(), CellState.Normal);
+
+        // =========================
+        // 先手持ち駒（2x10想定）
+        // =========================
+        var senteList = new List<Vector2Int>();
+
+        for (int y = 0; y < 10; y++)
+        for (int x = 0; x < 2; x++)
+            senteList.Add(new Vector2Int(x, y));
+
+        RPC_SetSenteHandCells(senteList.ToArray(), CellState.Normal);
+
+        // =========================
+        // 後手持ち駒（2x10想定）
+        // =========================
+        var goteList = new List<Vector2Int>();
+
+        for (int y = 0; y < 10; y++)
+        for (int x = 0; x < 2; x++)
+            goteList.Add(new Vector2Int(x, y));
+
+        RPC_SetGoteHandCells(goteList.ToArray(), CellState.Normal);
     }
 
     public void ChangeBoardCells(List<Vector2Int> posList)
@@ -556,7 +581,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
     private Piece ToLocal(NetworkPieceData d)
     {
-        Debug.Log($"Team:{d.Team} Type:{d.Type} {(int)d.Type}");
+        // Debug.Log($"Team:{d.Team} Type:{d.Type} {(int)d.Type}");
         if (d.Type == 0) return null;
         var data = ScriptableObject.CreateInstance<PieceData>();
         data.team = d.Team;
