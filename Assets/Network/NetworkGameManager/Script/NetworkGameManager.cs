@@ -27,8 +27,6 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // =========================
     // NetworkWaitStateにおける次のStateへの通過用
     // =========================
-    [Networked]
-    public bool IsMoved { get; set; }
 
     [Networked]
     public int MoveSignal { get; set; }
@@ -82,13 +80,14 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         gameViewer.BuildAll();
         Debug.Log("NetworkGameManagerにおいて再描画しました");
     }
-    public void NotifyRender()
-    {
-        RenderSignal++;
-    }
     // =========================
     // RPC
     // =========================
+    // [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    // private void NotifyRender()
+    // {   
+    //     RenderSignal++;
+    // }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_MovePieceFromBoard(int fi, int ti)
     {
@@ -129,7 +128,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
             CellBoard.Set(i, c);
         }
-        NotifyRender();
+        RenderSignal++;
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_SetSenteHandCells(int[] indices, CellState state)
@@ -141,7 +140,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
             SenteHandCell.Set(i, c);
         }
-        NotifyRender();
+        RenderSignal++;
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_SetGoteHandCells(int[] indices, CellState state)
@@ -153,7 +152,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
             GoteHandCell.Set(i, c);
         }
-        NotifyRender();
+        RenderSignal++;
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_SenteAddPiece(NetworkPieceData piece)
@@ -205,10 +204,6 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         var p = PieceBoard[index];
         p.IsPromoted = true;
         PieceBoard.Set(index, p);
-    }
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RPC_ChangeIsMovedTo(bool isMoved){
-        IsMoved = isMoved;
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
@@ -773,10 +768,9 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     }
 
     public void ChangeIsMovedTo(bool isMoved){
-        RPC_ChangeIsMovedTo(isMoved);
     }
     public bool GetIsMoved(){
-        return IsMoved;
+        return false;
     }
 }
 
