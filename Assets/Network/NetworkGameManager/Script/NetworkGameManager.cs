@@ -39,8 +39,6 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
     [Networked]
     public PlayerRef GotePlayer { get; set; }
-    [Networked]
-    public int RenderSignal { get; set; }
 
     // =========================
     // Local View State
@@ -72,22 +70,11 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
     public override void Render()
     {
-        if (RenderSignal == lastRenderSignal)
-            return;
-
-        lastRenderSignal = RenderSignal;
-
         gameViewer.BuildAll();
-        Debug.Log("NetworkGameManagerにおいて再描画しました");
     }
     // =========================
     // RPC
     // =========================
-    // [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    // private void NotifyRender()
-    // {   
-    //     RenderSignal++;
-    // }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_MovePieceFromBoard(int fi, int ti)
     {
@@ -128,7 +115,6 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
             CellBoard.Set(i, c);
         }
-        RenderSignal++;
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_SetSenteHandCells(int[] indices, CellState state)
@@ -140,7 +126,6 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
             SenteHandCell.Set(i, c);
         }
-        RenderSignal++;
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_SetGoteHandCells(int[] indices, CellState state)
@@ -152,7 +137,6 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
             GoteHandCell.Set(i, c);
         }
-        RenderSignal++;
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_SenteAddPiece(NetworkPieceData piece)
