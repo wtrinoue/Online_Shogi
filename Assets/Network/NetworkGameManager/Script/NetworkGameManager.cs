@@ -264,11 +264,14 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         int ti = ToIndex(to);
 
         var piece = SenteHandPiece[fi];
-        var localPiece = ToLocal(piece);
+        if (piece.Type == 0)
+            return null;
+
+        var targetPiece = ToLocal(PieceBoard[ti]);
 
         RPC_MovePieceFromSenteHand(fi, ti);
 
-        return localPiece;
+        return targetPiece;
     }
 
     public Piece MovePieceFromGoteHand(Vector2Int from, Vector2Int to)
@@ -277,11 +280,14 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         int ti = ToIndex(to);
 
         var piece = GoteHandPiece[fi];
-        var localPiece = ToLocal(piece);
+        if (piece.Type == 0)
+            return null;
+
+        var targetPiece = ToLocal(PieceBoard[ti]);
 
         RPC_MovePieceFromGoteHand(fi, ti);
 
-        return localPiece;
+        return targetPiece;
     }
 
     // =========================
@@ -291,9 +297,37 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     {
         if (piece == null) return;
 
-        var data = ToNetwork(piece);
+        // =========================
+        // 王を取ったら勝敗
+        // =========================
+        if (piece.data.type == PieceType.Ou)
+        {
+            ChangeGameState(piece.data.team == Team.Sente
+                ? GameState.GoteWin
+                : GameState.SenteWin);
+            return;
+        }
 
-        if (piece.data.team == Team.Sente)
+        // =========================
+        // 重要：取った駒は「相手の駒」に変換する
+        // =========================
+        Team targetTeam = (piece.data.team == Team.Sente)
+            ? Team.Gote
+            : Team.Sente;
+
+        var converted = pieceFactory.GetPiece(
+            targetTeam,
+            piece.data.type,
+            false,
+            true
+        );
+
+        var data = ToNetwork(converted);
+
+        // =========================
+        // 持ち駒へ追加
+        // =========================
+        if (targetTeam == Team.Sente)
         {
             for (int i = 0; i < 20; i++)
             {
@@ -516,6 +550,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         for (int i = 0; i < 20; i++)
             if (SenteHandPiece[i].Type != 0)
                 list.Add(ToLocal(SenteHandPiece[i]));
+        Debug.Log($"SenteHandList:{list.Count}");
         return list;
     }
 
@@ -533,6 +568,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         for (int i = 0; i < 20; i++)
             if (GoteHandPiece[i].Type != 0)
                 list.Add(ToLocal(GoteHandPiece[i]));
+        Debug.Log($"GoteHandList:{list.Count}");
         return list;
     }
 
@@ -632,10 +668,28 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     }
     public void DebugPrintCellBoard() { }
 
+    private GameState gameState = GameState.Playing;
+    private void ChangeGameState(GameState newState)
+    {
+        gameState = newState;
+    }
     public bool IsGameOver(out Team winner)
     {
-        winner = Team.Sente;
-        return false;
+        switch (gameState)
+        {
+            case GameState.Playing:
+                winner = Team.Sente; // ダミーの値
+                return false;
+            case GameState.SenteWin:
+                winner = Team.Sente;
+                return true;
+            case GameState.GoteWin:
+                winner = Team.Gote;
+                return true;
+            default:
+                winner = Team.Sente; // ダミーの値
+                return false;
+        }
     }
 }
 

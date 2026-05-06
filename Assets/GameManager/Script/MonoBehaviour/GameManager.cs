@@ -506,12 +506,6 @@ public class GameManager : MonoBehaviour, IGameManager
     // -------------------------
     // ゲームの判定
     // -------------------------
-    enum GameState
-    {
-        Playing,
-        SenteWin,
-        GoteWin
-    }
     private GameState gameState = GameState.Playing;
     private void ChangeGameState(GameState newState)
     {
