@@ -531,16 +531,23 @@ public class GameManager : MonoBehaviour, IGameManager
     }
 
     private int moveSignal = 0;
+    private Team lastMovedTeam = Team.Sente;
 
     // 以下NetworkGameManger用なのでダミー
-    public void SignalMove()
+    public void SignalMove(Team movedTeam)
     {
         moveSignal++;
+        lastMovedTeam = movedTeam;
     }
 
     public int GetMoveSignal()
     {
         return moveSignal;
+    }
+
+    public Team GetLastMovedTeam()
+    {
+        return lastMovedTeam;
     }
 
     public void ChangeIsMovedTo(bool isMoved){}

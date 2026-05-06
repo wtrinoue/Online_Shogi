@@ -34,6 +34,9 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     public int MoveSignal { get; set; }
 
     [Networked]
+    public Team LastMovedTeam { get; set; }
+
+    [Networked]
     public PlayerRef SentePlayer { get; set; }
 
     [Networked]
@@ -185,9 +188,10 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RPC_ChangeMoveSignalTo(int signal)
+    private void RPC_SignalMove(Team movedTeam)
     {
-        MoveSignal = signal;
+        MoveSignal++;
+        LastMovedTeam = movedTeam;
     }
     // =========================
     // Init
@@ -729,14 +733,19 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // NetworkGameManager専用
     // =========================
 
-    public void SignalMove()
+    public void SignalMove(Team movedTeam)
     {
-        RPC_ChangeMoveSignalTo(MoveSignal + 1);
+        RPC_SignalMove(movedTeam);
     }
 
     public int GetMoveSignal()
     {
         return MoveSignal;
+    }
+
+    public Team GetLastMovedTeam()
+    {
+        return LastMovedTeam;
     }
 
     public void ChangeIsMovedTo(bool isMoved){

@@ -9,22 +9,25 @@ public class NetworkWaitState : State
 
     public override void Enter()
     {
-        Debug.Log("NetworkWaitStateに入りました。相手の手を待っています…");
-        context.text.Show("相手が手を打っています");
+        Debug.Log("NetworkWaitState entered. Waiting for opponent move.");
+        context.text.Show("相手の手を待っています...");
         context.machine.RunCoroutine(WaitForMoveCoroutine());
     }
 
     private IEnumerator WaitForMoveCoroutine()
     {
         int lastMoveSignal = context.manager.GetMoveSignal();
-        while (context.manager.GetMoveSignal() == lastMoveSignal)
+        Team waitingTeam = context.turn.GetCurrentTurn();
+
+        while (context.manager.GetMoveSignal() == lastMoveSignal ||
+               context.manager.GetLastMovedTeam() != waitingTeam)
         {
-            Debug.Log($"相手の手を待機中... signal={context.manager.GetMoveSignal()}");
+            Debug.Log($"Waiting for move... signal={context.manager.GetMoveSignal()}, waitingTeam={waitingTeam}, lastMovedTeam={context.manager.GetLastMovedTeam()}");
             context.viewer.BuildAll();
             yield return new WaitForSeconds(0.5f);
         }
 
-        Debug.Log("相手の手を検知しました");
+        Debug.Log("Opponent move detected");
         context.machine.ChangeState(new NetworkJudgeState(context));
     }
 

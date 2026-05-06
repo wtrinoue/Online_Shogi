@@ -154,9 +154,14 @@ public class ManagerModule
         return gm.GetMoveSignal();
     }
 
-    public void SignalMove()
+    public void SignalMove(Team movedTeam)
     {
-        gm.SignalMove();
+        gm.SignalMove(movedTeam);
+    }
+
+    public Team GetLastMovedTeam()
+    {
+        return gm.GetLastMovedTeam();
     }
 
     public bool GetIsMoved(){
