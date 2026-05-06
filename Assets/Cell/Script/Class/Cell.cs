@@ -29,9 +29,9 @@ public class Cell
     }
 }
 
-public enum CellState
+public enum CellState : byte
 {
-    Normal,     // 何もない通常状態
-    Selected,   // 選択されている
-    Placeable   // 駒を置ける
+    Normal = 0,     // 何もない通常状態
+    Selected = 1,   // 選択されている
+    Placeable = 2  // 駒を置ける
 }
