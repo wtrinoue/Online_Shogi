@@ -11,15 +11,15 @@ public class NetworkWaitState : State
     {
         Debug.Log("NetworkWaitStateに入りました。相手の手を待っています…");
         context.text.Show("相手が手を打っています");
-        context.manager.ChangeIsMovedTo(false);
         context.machine.RunCoroutine(WaitForMoveCoroutine());
     }
 
     private IEnumerator WaitForMoveCoroutine()
     {
+        context.manager.ChangeIsMovedTo(false);
         while (!context.manager.GetIsMoved())
         {
-            Debug.Log("相手の手を待機中...");
+            Debug.Log($"相手の手を待機中...{context.manager.GetIsMoved()}");
             context.viewer.BuildAll();
             yield return new WaitForSeconds(0.5f);
         }
