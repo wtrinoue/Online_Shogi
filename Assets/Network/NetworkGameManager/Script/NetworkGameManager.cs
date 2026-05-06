@@ -66,11 +66,24 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         gameViewer = FindObjectOfType<GameViewer>();
         stateMachine.SetGameManager(gm);
         gameViewer.SetGameManager(gm);
+
+        StartCoroutine(RenderLoopCoroutine());
     }
 
-    public override void Render()
+    private IEnumerator RenderLoopCoroutine()
     {
-        gameViewer.BuildAll();
+        WaitForSeconds wait = new WaitForSeconds(0.5f); // 0.2秒ごと（調整OK）
+
+        while (true)
+        {
+            if (gameViewer != null)
+            {
+                gameViewer.ReloadAllData();
+                gameViewer.BuildAll();
+            }
+
+            yield return wait;
+        }
     }
     // =========================
     // RPC
