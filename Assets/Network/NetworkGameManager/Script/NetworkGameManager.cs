@@ -56,13 +56,8 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // =========================
     // 連携用
     // =========================
-    private StateMachine stateMachine;
-    private GameViewer gameViewer;
-    // =========================
-    // 描画用
-    // =========================
-    private int lastRenderSignal;
-    private bool needsRender;
+    public StateMachine stateMachine;
+    public GameViewer gameViewer;
     public override void Spawned()
     {
         IGameManager gm = this.GetComponent<IGameManager>();
@@ -70,43 +65,8 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         gameViewer = FindObjectOfType<GameViewer>();
         stateMachine.SetGameManager(gm);
         gameViewer.SetGameManager(gm);
-
-        // StartCoroutine(RenderLoopCoroutine());
-    }
-    public override void FixedUpdateNetwork()
-    {
-        if (RenderSignal != lastRenderSignal)
-        {
-            lastRenderSignal = RenderSignal;
-            needsRender = true;
-        }
-    }
-    public override void Render()
-    {
-        if (!needsRender)
-            return;
-
-        needsRender = false;
-
-        gameViewer.ReloadAllData();
-        gameViewer.BuildAll();
     }
 
-    private IEnumerator RenderLoopCoroutine()
-    {
-        WaitForSeconds wait = new WaitForSeconds(0.2f); // 0.2秒ごと（調整OK）
-
-        while (true)
-        {
-            if (gameViewer != null)
-            {
-                gameViewer.ReloadAllData();
-                gameViewer.BuildAll();
-            }
-
-            yield return wait;
-        }
-    }
     // =========================
     // RPC
     // =========================
@@ -228,11 +188,12 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_SignalMove(Team movedTeam)
     {
+        Debug.Log("MoveSignal++");
         MoveSignal++;
         LastMovedTeam = movedTeam;
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RPC_Render()
+    private void RPC_RenderSignalMove()
     {
         RenderSignal++;
     }
@@ -484,25 +445,21 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
             indices[i] = ToIndex(posList[i]);
 
         RPC_SetBoardCells(indices, CellState.Placeable);
-        RPC_Render();
     }
 
     public void ChangeBoardCellSelected(Vector2Int pos)
     {
         RPC_SetBoardCells(new[] { ToIndex(pos) }, CellState.Selected);
-        RPC_Render();
     }
 
     public void ChangeSenteHandCellSelected(Vector2Int pos)
     {
         RPC_SetSenteHandCells(new[] { ToHandIndex(pos) }, CellState.Selected);
-        RPC_Render();
     }
 
     public void ChangeGoteHandCellSelected(Vector2Int pos)
     {
         RPC_SetGoteHandCells(new[] { ToHandIndex(pos) }, CellState.Selected);
-        RPC_Render();
     }
 
     // =========================
@@ -781,6 +738,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // NetworkGameManager専用
     // =========================
 
+    // 以下State更新用
     public void SignalMove(Team movedTeam)
     {
         RPC_SignalMove(movedTeam);
@@ -800,6 +758,15 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     }
     public bool GetIsMoved(){
         return false;
+    }
+    // 以下描画更新用
+    public void RenderSignalMove()
+    {
+        RPC_RenderSignalMove();
+    }
+    public int GetRenderSignal()
+    {
+        return RenderSignal;
     }
 }
 

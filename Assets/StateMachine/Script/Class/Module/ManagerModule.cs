@@ -143,11 +143,8 @@ public class ManagerModule
         gm.ClearCells();
     }
     // =========================
-    // ネットワーク対戦用
+    // ネットワーク対戦用(State更新用)
     // =========================
-    public void ChangeIsMovedTo(bool isMoved){
-        gm.ChangeIsMovedTo(isMoved);
-    }
 
     public int GetMoveSignal()
     {
