@@ -11,7 +11,12 @@ public class NetworkWaitState : State
     {
         Debug.Log("NetworkWaitStateに入りました。相手の手を待っています…");
         context.text.Show("相手が手を打っています");
-        context.machine.RunCoroutine(WaitForMoveCoroutine());
+        // ホストの場合はカウンタを待つ、クライアントの場合は RPC を待つ
+        if (Object.HasStateAuthority)
+        {
+            context.machine.RunCoroutine(WaitForMoveCoroutine());
+        }
+        // クライアントは RPC で通知される
     }
 
     private IEnumerator WaitForMoveCoroutine()

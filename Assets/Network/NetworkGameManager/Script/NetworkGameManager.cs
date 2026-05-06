@@ -189,6 +189,20 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     {
         MoveSignal = signal;
     }
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    private void RPC_NotifyMoveCompleted()
+    {
+        // クライアント側で状態遷移をトリガー
+        if (!Object.HasStateAuthority)
+        {
+            var stateMachine = FindObjectOfType<StateMachine>();
+            if (stateMachine != null && stateMachine.currentState is NetworkWaitState)
+            {
+                stateMachine.ChangeState(new NetworkJudgeState(stateMachine.context));
+            }
+        }
+    }
     // =========================
     // Init
     // =========================
