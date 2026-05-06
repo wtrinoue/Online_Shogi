@@ -15,6 +15,7 @@ public class NetworkJudgeState : State
         }
         else
         {
+            context.turn.ChangeTurn();
             context.machine.ChangeState(
                 new TimerTextState(
                     context,

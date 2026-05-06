@@ -531,5 +531,5 @@ public class GameManager : MonoBehaviour, IGameManager
     }
     // 以下NetworkGameManger用なのでダミー
     public void ChangeIsMovedTo(bool isMoved){}
-    public bool GetIsMoved(){return false;}
+    public bool GetIsMoved(){return true;}
 }
