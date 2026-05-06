@@ -8,7 +8,6 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkRunner runnerPrefab;
     [SerializeField] private NetworkPrefabRef networkGameManagerPrefab;
-    [SerializeField] private Bootstrap bootstrap;
     [SerializeField] private StateMachine stateMachine;
     [SerializeField] private GameViewer gameViewer;
 
@@ -42,8 +41,9 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
             IGameManager gm = networkGameManager.GetComponent<IGameManager>();
             stateMachine.SetGameManager(gm);
             gameViewer.SetGameManager(gm);
-            bootstrap.SetGameManager(gm);
-            bootstrap.Init();
+            gm.Init();
+            stateMachine.Init();
+            gameViewer.Init();
         }
     }
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {}
