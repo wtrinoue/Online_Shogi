@@ -31,6 +31,9 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     public bool IsMoved { get; set; }
 
     [Networked]
+    public int MoveSignal { get; set; }
+
+    [Networked]
     public PlayerRef SentePlayer { get; set; }
 
     [Networked]
@@ -179,6 +182,12 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_ChangeIsMovedTo(bool isMoved){
         IsMoved = isMoved;
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_ChangeMoveSignalTo(int signal)
+    {
+        MoveSignal = signal;
     }
     // =========================
     // Init
@@ -719,6 +728,16 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // =========================
     // NetworkGameManager専用
     // =========================
+
+    public void SignalMove()
+    {
+        RPC_ChangeMoveSignalTo(MoveSignal + 1);
+    }
+
+    public int GetMoveSignal()
+    {
+        return MoveSignal;
+    }
 
     public void ChangeIsMovedTo(bool isMoved){
         RPC_ChangeIsMovedTo(isMoved);

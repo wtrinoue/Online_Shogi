@@ -16,15 +16,15 @@ public class NetworkWaitState : State
 
     private IEnumerator WaitForMoveCoroutine()
     {
-        while (!context.manager.GetIsMoved())
+        int lastMoveSignal = context.manager.GetMoveSignal();
+        while (context.manager.GetMoveSignal() == lastMoveSignal)
         {
-            Debug.Log($"相手の手を待機中...{context.manager.GetIsMoved()}");
+            Debug.Log($"相手の手を待機中... signal={context.manager.GetMoveSignal()}");
             context.viewer.BuildAll();
             yield return new WaitForSeconds(0.5f);
         }
 
         Debug.Log("相手の手を検知しました");
-        context.manager.ChangeIsMovedTo(false);
         context.machine.ChangeState(new NetworkJudgeState(context));
     }
 

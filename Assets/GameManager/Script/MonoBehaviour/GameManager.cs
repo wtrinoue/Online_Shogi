@@ -529,7 +529,20 @@ public class GameManager : MonoBehaviour, IGameManager
                 return false;
         }
     }
+
+    private int moveSignal = 0;
+
     // 以下NetworkGameManger用なのでダミー
+    public void SignalMove()
+    {
+        moveSignal++;
+    }
+
+    public int GetMoveSignal()
+    {
+        return moveSignal;
+    }
+
     public void ChangeIsMovedTo(bool isMoved){}
     public bool GetIsMoved(){return true;}
 }

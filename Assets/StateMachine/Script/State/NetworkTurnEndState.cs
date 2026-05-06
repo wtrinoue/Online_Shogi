@@ -6,7 +6,7 @@ public class NetworkTurnEndState : State
     public override void Enter()
     {
         Debug.Log("NetworkTurnEndStateに入りました");
-        context.manager.ChangeIsMovedTo(true);
+        context.manager.SignalMove();
         context.machine.ChangeState(new NetworkWaitState(context));
     }
     public override void Exit()

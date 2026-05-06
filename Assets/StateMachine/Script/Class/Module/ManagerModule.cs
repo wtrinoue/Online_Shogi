@@ -149,6 +149,16 @@ public class ManagerModule
         gm.ChangeIsMovedTo(isMoved);
     }
 
+    public int GetMoveSignal()
+    {
+        return gm.GetMoveSignal();
+    }
+
+    public void SignalMove()
+    {
+        gm.SignalMove();
+    }
+
     public bool GetIsMoved(){
         return gm.GetIsMoved();
     }
