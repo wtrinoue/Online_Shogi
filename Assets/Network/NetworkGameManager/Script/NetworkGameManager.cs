@@ -41,6 +41,8 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
     [Networked]
     public PlayerRef GotePlayer { get; set; }
+    [Networked]
+    public int RenderSignal { get; set; }
 
     // =========================
     // Local View State
@@ -53,10 +55,14 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     private Vector2Int selectedGoteHandPos;
     private Piece selectedPiece;
     // =========================
-    // ネットワークセット
+    // 連携用
     // =========================
     private StateMachine stateMachine;
     private GameViewer gameViewer;
+    // =========================
+    // 描画用
+    // =========================
+    private int lastRenderSignal;
     public override void Spawned()
     {
         IGameManager gm = this.GetComponent<IGameManager>();
@@ -64,6 +70,21 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         gameViewer = FindObjectOfType<GameViewer>();
         stateMachine.SetGameManager(gm);
         gameViewer.SetGameManager(gm);
+    }
+
+    public override void Render()
+    {
+        if (RenderSignal == lastRenderSignal)
+            return;
+
+        lastRenderSignal = RenderSignal;
+
+        gameViewer.BuildAll();
+        Debug.Log("NetworkGameManagerにおいて再描画しました");
+    }
+    public void NotifyRender()
+    {
+        RenderSignal++;
     }
     // =========================
     // RPC
@@ -108,6 +129,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
             CellBoard.Set(i, c);
         }
+        NotifyRender();
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_SetSenteHandCells(int[] indices, CellState state)
@@ -119,6 +141,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
             SenteHandCell.Set(i, c);
         }
+        NotifyRender();
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_SetGoteHandCells(int[] indices, CellState state)
@@ -130,6 +153,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
             GoteHandCell.Set(i, c);
         }
+        NotifyRender();
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_SenteAddPiece(NetworkPieceData piece)
