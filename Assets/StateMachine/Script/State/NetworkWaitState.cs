@@ -16,7 +16,6 @@ public class NetworkWaitState : State
 
     private IEnumerator WaitForMoveCoroutine()
     {
-        context.manager.ChangeIsMovedTo(false);
         while (!context.manager.GetIsMoved())
         {
             Debug.Log($"相手の手を待機中...{context.manager.GetIsMoved()}");
@@ -25,6 +24,7 @@ public class NetworkWaitState : State
         }
 
         Debug.Log("相手の手を検知しました");
+        context.manager.ChangeIsMovedTo(false);
         context.machine.ChangeState(new NetworkJudgeState(context));
     }
 
