@@ -40,6 +40,8 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
     [Networked]
     public PlayerRef GotePlayer { get; set; }
+    [Networked]
+    public int RenderSignal { get; set; }
 
     // =========================
     // Local View State
@@ -60,6 +62,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // 描画用
     // =========================
     private int lastRenderSignal;
+    private bool needsRender;
     public override void Spawned()
     {
         IGameManager gm = this.GetComponent<IGameManager>();
@@ -68,12 +71,30 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         stateMachine.SetGameManager(gm);
         gameViewer.SetGameManager(gm);
 
-        StartCoroutine(RenderLoopCoroutine());
+        // StartCoroutine(RenderLoopCoroutine());
+    }
+    public override void FixedUpdateNetwork()
+    {
+        if (RenderSignal != lastRenderSignal)
+        {
+            lastRenderSignal = RenderSignal;
+            needsRender = true;
+        }
+    }
+    public override void Render()
+    {
+        if (!needsRender)
+            return;
+
+        needsRender = false;
+
+        gameViewer.ReloadAllData();
+        gameViewer.BuildAll();
     }
 
     private IEnumerator RenderLoopCoroutine()
     {
-        WaitForSeconds wait = new WaitForSeconds(0.5f); // 0.2秒ごと（調整OK）
+        WaitForSeconds wait = new WaitForSeconds(0.2f); // 0.2秒ごと（調整OK）
 
         while (true)
         {
@@ -210,6 +231,12 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         MoveSignal++;
         LastMovedTeam = movedTeam;
     }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_Render()
+    {
+        RenderSignal++;
+    }
+
     // =========================
     // Init
     // =========================
@@ -457,21 +484,25 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
             indices[i] = ToIndex(posList[i]);
 
         RPC_SetBoardCells(indices, CellState.Placeable);
+        RPC_Render();
     }
 
     public void ChangeBoardCellSelected(Vector2Int pos)
     {
         RPC_SetBoardCells(new[] { ToIndex(pos) }, CellState.Selected);
+        RPC_Render();
     }
 
     public void ChangeSenteHandCellSelected(Vector2Int pos)
     {
         RPC_SetSenteHandCells(new[] { ToHandIndex(pos) }, CellState.Selected);
+        RPC_Render();
     }
 
     public void ChangeGoteHandCellSelected(Vector2Int pos)
     {
         RPC_SetGoteHandCells(new[] { ToHandIndex(pos) }, CellState.Selected);
+        RPC_Render();
     }
 
     // =========================
