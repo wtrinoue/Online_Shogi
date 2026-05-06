@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GoteGin
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
   team: 1
-  type: 1
+  type: 2
   normalSprite: {fileID: -3054068262431949301, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   promotedSprite: {fileID: -3290464760569710641, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   normalMove:

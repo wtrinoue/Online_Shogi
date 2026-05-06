@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GoteFu
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
   team: 1
-  type: 0
+  type: 1
   normalSprite: {fileID: 178323004080915677, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   promotedSprite: {fileID: 3992438680367422774, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   normalMove:

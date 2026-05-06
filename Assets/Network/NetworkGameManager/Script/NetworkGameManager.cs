@@ -474,13 +474,12 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
     private Piece ToLocal(NetworkPieceData d)
     {
+        Debug.Log($"Team:{d.Team} Type:{d.Type} {(int)d.Type}");
         if (d.Type == 0) return null;
-
         var data = ScriptableObject.CreateInstance<PieceData>();
         data.team = d.Team;
         data.type = d.Type;
-
-        return new Piece(data, d.IsPromoted);
+        return pieceFactory.GetPiece(data.team, data.type, d.IsPromoted, d.IsHanded);
     }
 
     private NetworkPieceData ToNetwork(Piece p)

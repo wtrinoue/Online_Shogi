@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GoteHisha
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
   team: 1
-  type: 2
+  type: 3
   normalSprite: {fileID: -7270478247666142701, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   promotedSprite: {fileID: -3010875801518799882, guid: 9e3a989fc0c861c4e93111b12a45616b, type: 3}
   normalMove:
