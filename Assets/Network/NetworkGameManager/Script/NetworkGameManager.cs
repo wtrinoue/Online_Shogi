@@ -41,6 +41,19 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     private Vector2Int selectedGoteHandPos;
     private Piece selectedPiece;
     // =========================
+    // ネットワークセット
+    // =========================
+    private StateMachine stateMachine;
+    private GameViewer gameViewer;
+    public override void Spawned()
+    {
+        IGameManager gm = this.GetComponent<IGameManager>();
+        stateMachine = FindObjectOfType<StateMachine>();
+        gameViewer = FindObjectOfType<GameViewer>();
+        stateMachine.SetGameManager(gm);
+        gameViewer.SetGameManager(gm);
+    }
+    // =========================
     // RPC
     // =========================
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
+using System.Linq;
 
 public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -23,6 +24,7 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
         await runner.StartGame(new StartGameArgs
         {
             GameMode = GameMode.AutoHostOrClient,
+            PlayerCount = 2
         });
     }
 
@@ -33,17 +35,31 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
     // =========================
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (!runner.IsServer) return;
-        if (FindObjectOfType<NetworkGameManager>() == null)
+        if (runner.ActivePlayers.Count() == 1)
         {
-            var net = runner.Spawn(networkGameManagerPrefab, Vector3.zero, Quaternion.identity);
-            networkGameManager = net.GetComponent<NetworkGameManager>();
-            IGameManager gm = networkGameManager.GetComponent<IGameManager>();
-            stateMachine.SetGameManager(gm);
-            gameViewer.SetGameManager(gm);
-            gm.Init();
-            stateMachine.Init();
-            gameViewer.Init();
+            Debug.Log("一番目に実行しました");
+            OnFirstPlayerJoined(runner, player);
+        }
+        else if (runner.ActivePlayers.Count() == 2)
+        {
+            Debug.Log("二番目に実行しました");
+            OnSecondPlayerJoined(runner, player);
+        }
+    }
+    public void OnFirstPlayerJoined(NetworkRunner runner, PlayerRef player)
+    {
+        var net = runner.Spawn(networkGameManagerPrefab, Vector3.zero, Quaternion.identity);
+        networkGameManager = net.GetComponent<NetworkGameManager>();
+    }
+    public void OnSecondPlayerJoined(NetworkRunner runner, PlayerRef player)
+    {
+        if (runner.IsServer)
+        {
+            stateMachine.SenteInit();
+        }
+        else
+        {
+            stateMachine.GoteInit();
         }
     }
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {}
