@@ -142,4 +142,14 @@ public class ManagerModule
     {
         gm.ClearCells();
     }
+    // =========================
+    // ネットワーク対戦用
+    // =========================
+    public void ChangeIsMovedTo(bool isMoved){
+        gm.ChangeIsMovedTo(isMoved);
+    }
+
+    public bool GetIsMoved(){
+        return gm.GetIsMoved();
+    }
 }

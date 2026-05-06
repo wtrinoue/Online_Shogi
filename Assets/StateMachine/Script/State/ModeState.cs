@@ -22,7 +22,7 @@ public class ModeState : State
                 );
                 break;
             case Mode.Network:
-                context.machine.ChangeState(new NetworkWaitState(context));
+                context.machine.ChangeState(new NetworkTurnEndState(context));
                 break;
         }
     }
