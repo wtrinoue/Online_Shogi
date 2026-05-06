@@ -436,6 +436,7 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
             goteList.Add(ToHandIndex(new Vector2Int(x, y)));
 
         RPC_SetGoteHandCells(goteList.ToArray(), CellState.Normal);
+        RPC_RenderSignalMove();
     }
 
     public void ChangeBoardCells(List<Vector2Int> posList)
@@ -445,21 +446,25 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
             indices[i] = ToIndex(posList[i]);
 
         RPC_SetBoardCells(indices, CellState.Placeable);
+        RPC_RenderSignalMove();
     }
 
     public void ChangeBoardCellSelected(Vector2Int pos)
     {
         RPC_SetBoardCells(new[] { ToIndex(pos) }, CellState.Selected);
+        RPC_RenderSignalMove();
     }
 
     public void ChangeSenteHandCellSelected(Vector2Int pos)
     {
         RPC_SetSenteHandCells(new[] { ToHandIndex(pos) }, CellState.Selected);
+        RPC_RenderSignalMove();
     }
 
     public void ChangeGoteHandCellSelected(Vector2Int pos)
     {
         RPC_SetGoteHandCells(new[] { ToHandIndex(pos) }, CellState.Selected);
+        RPC_RenderSignalMove();
     }
 
     // =========================
