@@ -20,7 +20,6 @@ public class NetworkWaitState : State
         while (!context.manager.GetIsMoved())
         {
             Debug.Log("相手の手を待機中...");
-            context.manager.ClearCells();
             context.viewer.BuildAll();
             yield return new WaitForSeconds(0.5f);
         }
