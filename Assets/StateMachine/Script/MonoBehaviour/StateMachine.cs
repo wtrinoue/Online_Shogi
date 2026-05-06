@@ -42,7 +42,7 @@ public class StateMachine : MonoBehaviour
     public void SenteInit()
     {
         context = new GameContext(this, gameManager, gameViewer, textManager, mode);
-        currentState = new GoteEntryState(context);
+        currentState = new SenteEntryState(context);
         currentState.Enter(); 
     }
 
