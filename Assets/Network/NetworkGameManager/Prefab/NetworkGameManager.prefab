@@ -122,6 +122,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkRenderWatcher
       objectReference: {fileID: 0}
+    - target: {fileID: 8651064202299409937, guid: 16c4152211c998740a05e470fc77a87e, type: 3}
+      propertyPath: networkGameManager
+      value: 
+      objectReference: {fileID: 4463337669882699217}
     - target: {fileID: 8738531695545922960, guid: 16c4152211c998740a05e470fc77a87e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
