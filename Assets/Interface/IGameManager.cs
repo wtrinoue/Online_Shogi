@@ -42,4 +42,6 @@ public interface IGameManager
     void DebugPrintPieceBoard();
     void DebugPrintCellBoard();
     bool IsGameOver(out Team winner);
+    void ChangeIsMovedTo(bool isMoved);
+    bool GetIsMoved();
 }

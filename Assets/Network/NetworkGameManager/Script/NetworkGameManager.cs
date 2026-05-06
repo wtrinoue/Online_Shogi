@@ -24,6 +24,11 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
     [Networked, Capacity(20)]
     public NetworkArray<NetworkCellState> GoteHandCell => default;
+    // =========================
+    // NetworkWaitStateにおける次のStateへの通過用
+    // =========================
+    [Networked]
+    public bool IsMoved { get; set; }
 
     // =========================
     // Local View State
@@ -158,6 +163,10 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
         var p = PieceBoard[index];
         p.IsPromoted = true;
         PieceBoard.Set(index, p);
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_ChangeIsMovedTo(bool isMoved){
+        IsMoved = isMoved;
     }
     // =========================
     // Init
@@ -690,6 +699,16 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
                 winner = Team.Sente; // ダミーの値
                 return false;
         }
+    }
+    // =========================
+    // NetworkGameManager専用
+    // =========================
+
+    public void ChangeIsMovedTo(bool isMoved){
+        RPC_ChangeIsMovedTo(isMoved);
+    }
+    public bool GetIsMoved(){
+        return IsMoved;
     }
 }
 
