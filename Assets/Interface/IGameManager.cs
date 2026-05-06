@@ -45,6 +45,4 @@ public interface IGameManager
     void SignalMove(Team movedTeam);
     int GetMoveSignal();
     Team GetLastMovedTeam();
-    void ChangeIsMovedTo(bool isMoved);
-    bool GetIsMoved();
 }

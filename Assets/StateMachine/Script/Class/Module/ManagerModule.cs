@@ -160,8 +160,4 @@ public class ManagerModule
     {
         return gm.GetLastMovedTeam();
     }
-
-    public bool GetIsMoved(){
-        return gm.GetIsMoved();
-    }
 }

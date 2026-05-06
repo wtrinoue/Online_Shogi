@@ -23,7 +23,6 @@ public class SelectSenteState : State
             if (context.manager.IsPlaceable(boardPos))
             {
                 context.manager.MoveFromSenteHand(boardPos);
-                context.turn.ChangeTurn();
                 context.manager.ClearCells();
 
                 context.machine.ChangeState(new JudgeState(context));

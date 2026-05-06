@@ -758,12 +758,6 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     {
         return LastMovedTeam;
     }
-
-    public void ChangeIsMovedTo(bool isMoved){
-    }
-    public bool GetIsMoved(){
-        return false;
-    }
     // 以下描画更新用
     public void RenderSignalMove()
     {
