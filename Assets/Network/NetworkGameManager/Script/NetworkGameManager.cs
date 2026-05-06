@@ -70,8 +70,10 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RPC_SetBoardCells(Vector2Int[] positions, CellState state)
     {
+        Debug.Log("RPC_SetBoardCells");
         foreach (var p in positions)
         {
+            Debug.Log(p);
             int i = ToIndex(p);
 
             var c = CellBoard[i];
@@ -376,7 +378,87 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
 
     public List<Vector2Int> GetBoardPieceMovablePositions(Vector2Int pos)
     {
-        return new List<Vector2Int>(); // 既存ロジック流用想定
+        int fromIndex = ToIndex(pos);
+        var pieceData = PieceBoard[fromIndex];
+
+        if (pieceData.Type == 0)
+            return new List<Vector2Int>();
+
+        Piece piece = ToLocal(pieceData);
+        MovePattern movePattern = piece.GetMovePattern();
+
+        Vector2Int[] direction = movePattern.direction;
+        Vector2Int[] position = movePattern.position;
+
+        List<Vector2Int> result = new List<Vector2Int>();
+
+        // =========================
+        // 方向（伸びる移動）
+        // =========================
+        foreach (var vec in direction)
+        {
+            for (int i = 1; i < 9; i++)
+            {
+                Vector2Int targetPos = pos + vec * i;
+
+                if (!IsInsideBoard(targetPos))
+                    continue;
+
+                int targetIndex = ToIndex(targetPos);
+                var targetData = PieceBoard[targetIndex];
+
+                // 空マス
+                if (targetData.Type == 0)
+                {
+                    result.Add(targetPos);
+                    continue;
+                }
+
+                // 同じチーム
+                if (targetData.Team == pieceData.Team)
+                {
+                    break;
+                }
+                // 敵駒
+                else
+                {
+                    result.Add(targetPos);
+                    break;
+                }
+            }
+        }
+
+        // =========================
+        // 固定移動
+        // =========================
+        foreach (var vec in position)
+        {
+            Vector2Int targetPos = pos + vec;
+
+            if (!IsInsideBoard(targetPos))
+                continue;
+
+            int targetIndex = ToIndex(targetPos);
+            var targetData = PieceBoard[targetIndex];
+
+            // 空
+            if (targetData.Type == 0)
+            {
+                result.Add(targetPos);
+                continue;
+            }
+
+            // 同じチームなら不可
+            if (targetData.Team == pieceData.Team)
+            {
+                continue;
+            }
+
+            // 敵なら取れる
+            result.Add(targetPos);
+        }
+
+        return result;
     }
 
     // =========================
