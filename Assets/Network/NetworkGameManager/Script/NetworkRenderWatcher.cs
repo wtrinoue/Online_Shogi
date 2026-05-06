@@ -1,16 +1,13 @@
+using System.Collections;
 using UnityEngine;
 
 public class NetworkRenderWatcher : MonoBehaviour
 {
-    private NetworkGameManager networkGameManager;
+    public NetworkGameManager networkGameManager;
 
     private int lastRenderSignal = -1;
-    private bool needsRender;
+    private Coroutine boostCoroutine;
 
-    void Awake()
-    {
-        networkGameManager = GetComponentInParent<NetworkGameManager>();
-    }
     void Update()
     {
         if (networkGameManager == null)
@@ -18,22 +15,34 @@ public class NetworkRenderWatcher : MonoBehaviour
 
         int current = networkGameManager.GetRenderSignal();
 
-        // 変化検知
         if (current != lastRenderSignal)
         {
             lastRenderSignal = current;
-            needsRender = true;
+
+            // ブースト開始
+            if (boostCoroutine != null)
+                StopCoroutine(boostCoroutine);
+
+            boostCoroutine = StartCoroutine(RenderBoost());
         }
+    }
 
-        // 描画実行（Update側でやるならここでOK）
-        if (needsRender)
+    private IEnumerator RenderBoost()
+    {
+        float duration = 0.3f;   // ブースト時間
+        float interval = 0.02f;  // 高頻度描画（約50fps相当）
+
+        float t = 0f;
+
+        while (t < duration)
         {
-            needsRender = false;
-
             networkGameManager.gameViewer.ReloadAllData();
             networkGameManager.gameViewer.BuildAll();
 
-            Debug.Log("NetworkRenderSupportにより再描画");
+            t += interval;
+            yield return new WaitForSeconds(interval);
         }
+
+        boostCoroutine = null;
     }
 }
