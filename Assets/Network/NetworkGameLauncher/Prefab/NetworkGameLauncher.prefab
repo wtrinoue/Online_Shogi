@@ -47,3 +47,6 @@ MonoBehaviour:
   runnerPrefab: {fileID: 8558689763732597268, guid: f233f49d5bafd8b4599ca2b3d74b2b35, type: 3}
   networkGameManagerPrefab:
     RawGuidValue: fd03487a7eb5466488e4e87c4f4241d8
+  stateMachine: {fileID: 0}
+  gameViewer: {fileID: 0}
+  textManager: {fileID: 0}

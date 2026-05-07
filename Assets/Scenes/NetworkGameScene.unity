@@ -525,13 +525,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1119979427739639637, guid: c8993088b3ea09d469e347032b36af78, type: 3}
-      propertyPath: bootstrap
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1119979427739639637, guid: c8993088b3ea09d469e347032b36af78, type: 3}
       propertyPath: gameViewer
       value: 
       objectReference: {fileID: 854802384}
+    - target: {fileID: 1119979427739639637, guid: c8993088b3ea09d469e347032b36af78, type: 3}
+      propertyPath: textManager
+      value: 
+      objectReference: {fileID: 364310251}
     - target: {fileID: 1119979427739639637, guid: c8993088b3ea09d469e347032b36af78, type: 3}
       propertyPath: stateMachine
       value: 
@@ -593,6 +593,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1149491739394297712, guid: 3018aa9809a1ce145877bffbf281ed87, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4092898211390947218, guid: 3018aa9809a1ce145877bffbf281ed87, type: 3}
       propertyPath: m_Pivot.x
       value: 0
