@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class NetworkJudgeState : State
 {
-    public NetworkJudgeState(GameContext context) : base(context)
+    private State nextState;
+    public NetworkJudgeState(GameContext context,State nextState) : base(context)
     {
+        this.nextState = nextState;
     }
 
     public override void Enter()
@@ -11,6 +13,12 @@ public class NetworkJudgeState : State
         Debug.Log("NetworkJudgeStateに入りました");
         if (context.judge.IsEnd(out Team winner))
         {
+            context.turn.ChangeTurn();
+            Team movedTeam = context.turn.GetCurrentTurn() == Team.Sente
+                ? Team.Gote
+                : Team.Sente;
+
+            context.manager.SignalMove(movedTeam);
             context.machine.ChangeState(new EndState(context, winner));
         }
         else
@@ -21,7 +29,7 @@ public class NetworkJudgeState : State
                     context,
                     $"{context.turn.GetCurrentTurn()}のターン",
                     1f,
-                    new IdleState(context)
+                    nextState
                 )
             );
         }

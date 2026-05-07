@@ -18,7 +18,7 @@ public class JudgeState : State
         else
         {
             context.turn.ChangeTurn();
-            context.machine.ChangeState(new ModeState(context));
+            context.machine.ChangeState(new IdleState(context));
         }
     }
 

@@ -28,7 +28,7 @@ public class NetworkWaitState : State
         }
 
         Debug.Log("Opponent move detected");
-        context.machine.ChangeState(new NetworkJudgeState(context));
+        context.machine.ChangeState(new NetworkJudgeState(context, new IdleState(context)));
     }
 
     public override void Exit()
