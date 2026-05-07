@@ -8,12 +8,14 @@ public class SceneLoader : MonoBehaviour
     {
         Title,
         LocalGame,
+        NetworkGame
     }
 
     private Dictionary<SceneType, string> sceneMap = new()
     {
         { SceneType.Title, "TitleScene" },
         { SceneType.LocalGame, "LocalGameScene" },
+        { SceneType.NetworkGame, "NetworkGameScene"}
     };
 
     [SerializeField] private SceneType sceneType;
