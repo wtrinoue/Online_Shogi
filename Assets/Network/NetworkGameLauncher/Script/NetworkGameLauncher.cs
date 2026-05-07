@@ -93,6 +93,7 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
 
         if (isHost)
         {
+            networkGameManager.Init();
             stateMachine.SenteInit();
         }
         else
