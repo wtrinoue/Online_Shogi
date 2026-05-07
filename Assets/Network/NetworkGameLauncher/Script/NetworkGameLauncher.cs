@@ -45,10 +45,7 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
         if (count == 1)
         {
             Debug.Log("一番目に実行しました（Sente確定）");
-            if (runner.IsServer)
-            {
-                OnFirstPlayerJoined(runner, player);
-            }
+            OnFirstPlayerJoined(runner, player);
         }
         else if (count == 2)
         {
@@ -59,7 +56,7 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnFirstPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        var net = runner.Spawn(networkGameManagerPrefab, Vector3.zero, Quaternion.identity);
+        var net = runner.Spawn(networkGameManagerPrefab, Vector3.zero, Quaternion.identity, player);
         networkGameManager = net.GetComponent<NetworkGameManager>();
         networkGameManager.SentePlayer = player;
     }
