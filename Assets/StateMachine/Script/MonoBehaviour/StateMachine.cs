@@ -12,14 +12,14 @@ public class StateMachine : MonoBehaviour
     private IGameManager gameManager;
 
     private IInputProvider inputAdapter;
-    private State currentState;
+    private State currentState ;
     public GameContext context;
 
     void Awake()
     {
         inputAdapter = inputObject.GetComponent<IInputProvider>();
         gameManager = gameManagerObject.GetComponent<IGameManager>();
-
+        currentState = new EmptyState(context);
         if (inputAdapter == null)
         {
             Debug.LogError("IInputProviderが見つかりません");
