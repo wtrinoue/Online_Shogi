@@ -28,7 +28,7 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
 
         await runner.StartGame(new StartGameArgs
         {
-            GameMode = GameMode.AutoHostOrClient,
+            GameMode = GameMode.Shared,
             PlayerCount = 2
         });
     }
