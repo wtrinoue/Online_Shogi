@@ -40,6 +40,19 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
             IsVisible = true
         });
     }
+    private async void OnDestroy()
+    {
+        if (runner != null)
+        {
+            runner.RemoveCallbacks(this);
+
+            await runner.Shutdown();
+
+            Destroy(runner.gameObject);
+
+            runner = null;
+        }
+    }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
