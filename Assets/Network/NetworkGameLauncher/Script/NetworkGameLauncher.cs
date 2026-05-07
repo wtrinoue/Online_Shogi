@@ -66,7 +66,7 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSecondPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer)
+        if (player == networkGameManager.SentePlayer)
         {
             networkGameManager.GotePlayer = player;
             StartCoroutine(WaitForGameStart(true));
