@@ -13,12 +13,6 @@ public class NetworkJudgeState : State
         Debug.Log("NetworkJudgeStateに入りました");
         if (context.judge.IsEnd(out Team winner))
         {
-            context.turn.ChangeTurn();
-            Team movedTeam = context.turn.GetCurrentTurn() == Team.Sente
-                ? Team.Gote
-                : Team.Sente;
-
-            context.manager.SignalMove(movedTeam);
             context.machine.ChangeState(new EndState(context, winner));
         }
         else
