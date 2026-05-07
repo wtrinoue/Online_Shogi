@@ -58,11 +58,13 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     // =========================
     public StateMachine stateMachine;
     public GameViewer gameViewer;
+    public TextManager textManager;
     public override void Spawned()
     {
         IGameManager gm = this.GetComponent<IGameManager>();
         stateMachine = FindObjectOfType<StateMachine>();
         gameViewer = FindObjectOfType<GameViewer>();
+        textManager = FindObjectOfType<TextManager>();
         stateMachine.SetGameManager(gm);
         gameViewer.SetGameManager(gm);
     }
@@ -196,6 +198,14 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
     private void RPC_RenderSignalMove()
     {
         RenderSignal++;
+    }
+    // =========================
+    // 終了通知用
+    // =========================
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    private void RPC_GameEnd(Team winner)
+    {
+        textManager.ShowResult($"{winner}が勝ちました！");
     }
 
     // =========================
@@ -730,9 +740,11 @@ public class NetworkGameManager : NetworkBehaviour, IGameManager
                 return false;
             case GameState.SenteWin:
                 winner = Team.Sente;
+                RPC_GameEnd(winner);
                 return true;
             case GameState.GoteWin:
                 winner = Team.Gote;
+                RPC_GameEnd(winner);
                 return true;
             default:
                 winner = Team.Sente; // ダミーの値

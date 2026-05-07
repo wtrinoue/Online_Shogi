@@ -11,11 +11,15 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkPrefabRef networkGameManagerPrefab;
     [SerializeField] private StateMachine stateMachine;
     [SerializeField] private GameViewer gameViewer;
+    [SerializeField] private TextManager textManager;
 
     private NetworkRunner runner;
     private NetworkGameManager networkGameManager;
     private bool isInitialized = false;
-
+    private void Awake()
+    {
+        textManager.ShowResult("相手を待っています...");
+    }
     private async void Start()
     {
         runner = Instantiate(runnerPrefab);
@@ -58,7 +62,6 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
         var net = runner.Spawn(networkGameManagerPrefab, Vector3.zero, Quaternion.identity);
         networkGameManager = net.GetComponent<NetworkGameManager>();
         networkGameManager.SentePlayer = player;
-        networkGameManager.Init();
     }
 
     public void OnSecondPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -83,11 +86,14 @@ public class NetworkGameLauncher : MonoBehaviour, INetworkRunnerCallbacks
                 break;
             yield return null;
         }
-
-        yield return null;
+        textManager.HideResult();
+        textManager.ShowMessage("マッチングしました！");
+        yield return new WaitForSeconds(3f);
+        textManager.HideMessage();
 
         if (isHost)
         {
+            networkGameManager.Init();
             stateMachine.SenteInit();
         }
         else

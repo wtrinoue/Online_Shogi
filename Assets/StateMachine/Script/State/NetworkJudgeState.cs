@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class NetworkJudgeState : State
 {
-    public NetworkJudgeState(GameContext context) : base(context)
+    private State nextState;
+    public NetworkJudgeState(GameContext context,State nextState) : base(context)
     {
+        this.nextState = nextState;
     }
 
     public override void Enter()
@@ -21,7 +23,7 @@ public class NetworkJudgeState : State
                     context,
                     $"{context.turn.GetCurrentTurn()}のターン",
                     1f,
-                    new IdleState(context)
+                    nextState
                 )
             );
         }

@@ -10,7 +10,7 @@ public class NetworkWaitState : State
     public override void Enter()
     {
         Debug.Log("NetworkWaitState entered. Waiting for opponent move.");
-        context.text.Show("相手の手を待っています...");
+        context.text.Show("待機中...");
         context.machine.RunCoroutine(WaitForMoveCoroutine());
     }
 
@@ -28,7 +28,7 @@ public class NetworkWaitState : State
         }
 
         Debug.Log("Opponent move detected");
-        context.machine.ChangeState(new NetworkJudgeState(context));
+        context.machine.ChangeState(new NetworkJudgeState(context, new IdleState(context)));
     }
 
     public override void Exit()

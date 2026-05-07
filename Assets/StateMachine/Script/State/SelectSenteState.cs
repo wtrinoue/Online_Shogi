@@ -25,7 +25,7 @@ public class SelectSenteState : State
                 context.manager.MoveFromSenteHand(boardPos);
                 context.manager.ClearCells();
 
-                context.machine.ChangeState(new JudgeState(context));
+                context.machine.ChangeState(new ModeState(context));
                 return;
             }
 

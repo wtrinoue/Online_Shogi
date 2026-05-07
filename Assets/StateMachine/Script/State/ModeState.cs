@@ -17,12 +17,12 @@ public class ModeState : State
                         context,
                         $"{context.turn.GetCurrentTurn()}のターン",
                         1f,
-                        new IdleState(context)
+                        new JudgeState(context)
                     )
                 );
                 break;
             case Mode.Network:
-                context.machine.ChangeState(new NetworkTurnEndState(context));
+                context.machine.ChangeState(new NetworkJudgeState(context, new NetworkTurnEndState(context)));
                 break;
         }
     }
