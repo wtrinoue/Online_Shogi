@@ -29,7 +29,7 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
 
 - `Assets/StateMachine/Script/MonoBehaviour/StateMachine.cs`
   - 現在の `State` を保持し、クリックイベントを現在状態に委譲します。
-  - `Init()` で `GameContext` を生成し、最初に `TimerTextState` を経由して `IdleState` を開始します。
+  - `Init()` で `GameContext` を生成し、最初の待機状態を開始します。
   - `ChangeState(State state)` で現在状態の `Exit()` を呼び、次状態の `Enter()` を呼び出します。
 
 ### ルールと盤面管理
@@ -58,32 +58,28 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
   - 盤面駒、先手持ち駒、後手持ち駒の選択を受け付けます。
 - `Assets/StateMachine/Script/State/SelectBoardState.cs`
   - 盤上の駒を選択した後の状態。
-  - 移動先の選択や別の駒の再選択を処理します。
+  - 移動先の選択を処理します。
 - `Assets/StateMachine/Script/State/SelectSenteState.cs`
   - 先手の持ち駒を選択した状態。
-  - 打つ位置の選択や盤上駒への切り替えを処理します。
+  - 打つ位置の選択を処理します。
 - `Assets/StateMachine/Script/State/SelectGoteState.cs`
   - 後手の持ち駒を選択した状態。
-  - 打つ位置の選択や盤上駒への切り替えを処理します。
+  - 打つ位置の選択を処理します。
 - `Assets/StateMachine/Script/State/JudgeState.cs`
   - 手番が終わった後に勝敗判定を行う状態。
   - 終了条件なら `EndState`、続行なら `ModeState` へ遷移します。
 - `Assets/StateMachine/Script/State/ModeState.cs`
   - ゲームモードに応じて次の状態を決定します。
-  - ローカルモードなら `TimerTextState` を経て `IdleState` に戻ります。
+  - ローカルモードなら次の判定処理へ進みます。
   - ネットワークモードなら `NetworkWaitState` へ遷移します。
 - `Assets/StateMachine/Script/State/NetworkWaitState.cs`
   - ネットワーク対戦時に相手の手を待つ状態です。
 - `Assets/StateMachine/Script/State/NetworkJudgeState.cs`
-  - ネットワーク対戦で勝敗判定を行い、続行なら次ターン表示へ遷移します。
-- `Assets/StateMachine/Script/State/TimerTextState.cs`
-  - 文字メッセージを表示し、指定時間後に次の状態へ遷移します。
+  - ネットワーク対戦で勝敗判定を行い、続行なら次の進行先へ遷移します。
 - `Assets/StateMachine/Script/State/EndState.cs`
   - 勝者表示を行う終了状態です。
-- `Assets/StateMachine/Script/State/TextState.cs`
-  - クリックで次状態に遷移する汎用メッセージ状態です（現状では未使用）。
 - `Assets/StateMachine/Script/State/SenteEntryState.cs`
-  - 先手ターン開始時に `TimerTextState` へ遷移する実装があります（現状では未使用）。
+  - 先手ターン開始時の入口です（現状では未使用）。
 - `Assets/StateMachine/Script/State/GoteEntryState.cs`
   - ネットワーク対戦の接続待ち開始状態です（現状では未使用）。
 
@@ -97,16 +93,15 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
 
 このプロジェクトでは、`StateMachine` が現在の `State` を保持し、入力イベントを現在状態へ委譲します。
 状態遷移は `ChangeState(State state)` に集約され、`currentState.Exit()` → `currentState = state` → `currentState.Enter()` の順で実行されます。
-`Assets/StateMachine/Script/State` 配下には現在15個のStateがあり、起動直後の空状態、ローカル対戦、ネットワーク対戦、メッセージ表示、終了表示までを分担しています。
+`Assets/StateMachine/Script/State` 配下の主要なStateが、起動直後の空状態、ローカル対戦、ネットワーク対戦、終了表示までを分担しています。
 
 ### 起動と初期化
 
 1. `StateMachine.Awake()` で `IInputProvider` と `IGameManager` を取得し、仮の現在状態として `EmptyState` を設定します。
 2. `StateMachine.Start()` で `BoardConverter` に `BoardConfig` を渡し、クリックイベントを `OnClick(Vector2 pos)` に接続します。
 3. 通常起動では `Init()` が `GameContext` を生成し、`context.turn.SetTurn(Team.Sente)` のあと `SenteEntryState` を開始します。
-4. `SenteEntryState.Enter()` は先手ターンを設定し、`TimerTextState("Senteのターン", 1f, IdleState)` に遷移します。
-5. `TimerTextState` はメッセージを表示して1秒待ち、`IdleState` に遷移します。
-6. ネットワーク側の初期化では `SenteInit()` または `GoteInit()` も使われます。`GoteInit()` は `TimerTextState(..., GoteEntryState)` を挟み、`GoteEntryState` から `NetworkWaitState` へ入ります。
+4. `SenteEntryState.Enter()` は先手ターンを設定し、待機状態の `IdleState` へ進みます。
+5. ネットワーク側の初期化では `SenteInit()` または `GoteInit()` も使われます。`GoteInit()` は `GoteEntryState` から `NetworkWaitState` へ入ります。
 
 ### 各Stateの役割と遷移条件
 
@@ -116,20 +111,11 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
 
 - `SenteEntryState`
   - 先手開始用の入口です。
-  - `Enter()` で `Team.Sente` を現在ターンに設定し、`TimerTextState` を経由して `IdleState` へ遷移します。
+  - `Enter()` で `Team.Sente` を現在ターンに設定し、`IdleState` へ遷移します。
 
 - `GoteEntryState`
   - 後手側、またはネットワーク待機開始用の入口です。
   - `Enter()` でターンを `Team.Sente` に設定し、`NetworkWaitState` へ遷移します。
-
-- `TimerTextState`
-  - ターン表示などの一時メッセージ状態です。
-  - `Enter()` で `context.text.Show(message)` と `context.viewer.BuildAll()` を実行し、指定秒数後にコンストラクタで渡された `nextState` へ遷移します。
-  - `Exit()` でメッセージを非表示にします。
-
-- `TextState`
-  - クリック待ちの汎用メッセージ状態です。
-  - `Enter()` でメッセージを表示し、任意クリックで `nextState` へ遷移します。
 
 - `IdleState`
   - 駒未選択の待機状態です。
@@ -141,26 +127,18 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
 - `SelectBoardState`
   - 盤上の駒を選択中の状態です。
   - 盤上クリック先が `context.manager.IsPlaceable(boardPos)` を満たす場合、選択中の盤上駒を移動し、セルを消して `ModeState` へ遷移します。
-  - 盤上の自駒を再選択した場合は、移動可能セルを更新して `SelectBoardState` に留まります。
-  - 現在手番の先手持ち駒を選んだ場合は `SelectSenteState` へ、現在手番の後手持ち駒を選んだ場合は `SelectGoteState` へ切り替えます。
 
 - `SelectSenteState`
   - 先手持ち駒を選択中の状態です。
   - 盤上クリック先が配置可能なら `MoveFromSenteHand()` で駒を打ち、セルを消して `ModeState` へ遷移します。
-  - 盤上の現在手番の駒を選んだ場合は `SelectBoardState` へ遷移します。
-  - 先手持ち駒を再選択した場合は、打てるセルを更新して `SelectSenteState` に留まります。
-  - 後手持ち駒を選び、その駒が現在手番の駒なら `SelectGoteState` へ切り替えます。
 
 - `SelectGoteState`
   - 後手持ち駒を選択中の状態です。
   - 盤上クリック先が配置可能なら `MoveFromGoteHand()` で駒を打ち、セルを消して `ModeState` へ遷移します。
-  - 盤上の現在手番の駒を選んだ場合は `SelectBoardState` へ遷移します。
-  - 先手持ち駒を選び、その駒が現在手番の駒なら `SelectSenteState` へ切り替えます。
-  - 後手持ち駒を再選択した場合は、打てるセルを更新して `SelectGoteState` に留まります。
 
 - `ModeState`
   - 一手完了後に、ローカル対戦とネットワーク対戦の進行先を分岐します。
-  - `Mode.Local` の場合は `TimerTextState(..., JudgeState)` へ遷移します。
+  - `Mode.Local` の場合は `JudgeState` へ遷移します。
   - `Mode.Network` の場合は `NetworkJudgeState(nextState: NetworkTurnEndState)` へ遷移します。
 
 - `JudgeState`
@@ -171,7 +149,7 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
 - `NetworkJudgeState`
   - ネットワーク対戦の勝敗判定状態です。
   - 終了条件を満たす場合は `EndState` へ遷移します。
-  - 続行する場合はターンを交代し、`TimerTextState(..., nextState)` へ遷移します。`nextState` は呼び出し元により `NetworkTurnEndState` または `IdleState` になります。
+  - 続行する場合はターンを交代し、呼び出し元に応じて `NetworkTurnEndState` または `IdleState` へ遷移します。
 
 - `NetworkTurnEndState`
   - 自分の手が完了したことをネットワーク側に通知する状態です。
@@ -194,44 +172,30 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
 stateDiagram-v2
     [*] --> EmptyState: Awake
     EmptyState --> SenteEntryState: Init / SenteInit
-    EmptyState --> TimerTextState: GoteInit
+    EmptyState --> GoteEntryState: GoteInit
 
-    SenteEntryState --> TimerTextState: 先手ターン設定
+    SenteEntryState --> IdleState: 先手ターン設定
     GoteEntryState --> NetworkWaitState: 待機開始
-    TimerTextState --> IdleState: nextStateがIdleState
-    TimerTextState --> JudgeState: nextStateがJudgeState
-    TimerTextState --> GoteEntryState: nextStateがGoteEntryState
-    TimerTextState --> NetworkTurnEndState: nextStateがNetworkTurnEndState
-
-    TextState --> IdleState: 任意クリックでnextStateへ
 
     IdleState --> SelectBoardState: 現在手番の盤上駒を選択
     IdleState --> SelectSenteState: 現在手番の先手持ち駒を選択
     IdleState --> SelectGoteState: 現在手番の後手持ち駒を選択
 
-    SelectBoardState --> SelectBoardState: 現在手番の盤上駒を再選択
-    SelectBoardState --> SelectSenteState: 現在手番の先手持ち駒へ切替
-    SelectBoardState --> SelectGoteState: 現在手番の後手持ち駒へ切替
     SelectBoardState --> ModeState: 配置可能セルへ盤上駒を移動
 
-    SelectSenteState --> SelectSenteState: 先手持ち駒を再選択
-    SelectSenteState --> SelectBoardState: 現在手番の盤上駒へ切替
-    SelectSenteState --> SelectGoteState: 現在手番の後手持ち駒へ切替
     SelectSenteState --> ModeState: 配置可能セルへ先手持ち駒を打つ
 
-    SelectGoteState --> SelectGoteState: 後手持ち駒を再選択
-    SelectGoteState --> SelectBoardState: 現在手番の盤上駒へ切替
-    SelectGoteState --> SelectSenteState: 現在手番の先手持ち駒へ切替
     SelectGoteState --> ModeState: 配置可能セルへ後手持ち駒を打つ
 
-    ModeState --> TimerTextState: Mode.Local
+    ModeState --> JudgeState: Mode.Local
     ModeState --> NetworkJudgeState: Mode.Network
 
     JudgeState --> EndState: 勝敗判定あり
     JudgeState --> IdleState: 続行、ターン交代
 
     NetworkJudgeState --> EndState: 勝敗判定あり
-    NetworkJudgeState --> TimerTextState: 続行、ターン交代
+    NetworkJudgeState --> NetworkTurnEndState: 自分の手番へ続行
+    NetworkJudgeState --> IdleState: 相手の手番後に続行
     NetworkTurnEndState --> NetworkWaitState: 着手通知完了
     NetworkWaitState --> NetworkJudgeState: 相手の着手を検出
 ```
@@ -241,7 +205,6 @@ stateDiagram-v2
 - `StateMachine` は主に「現在の状態」と「クリックイベントの受け渡し」を担当します。
 - `GameManager` はルールに関わるデータ操作を担当し、状態遷移そのものは行いません。
 - `GameViewer` は描画を担当し、ロジックを持ちません。
-- `TimerTextState` により、ターン開始時の一時停止表示が実現されています。
 - `JudgeState` で勝敗を判定し、`EndState` もしくは再開ルートへ分岐します。
 
 ## 開発の歩み（Git履歴からの工程）
@@ -285,7 +248,7 @@ stateDiagram-v2
 
 10. `5e9bddd` - `1c05da1`（2026-04-27 - 2026-04-28）
     - シーン保存、`GameManager` のgetter類、持ち駒表示、選択中の駒位置、配置可能判定を追加しました。
-    - `TextState` と `TextManager` を修正し、StateMachineの初期化と基本ゲームループを整えました。
+    - 表示まわりを修正し、StateMachineの初期化と基本ゲームループを整えました。
     - この段階で「駒を選択し、移動し、表示を更新する」基本操作が成立しました。
 
 11. `e8258ef` - `d53a2d7`（2026-04-28 - 2026-04-29）
@@ -301,9 +264,9 @@ stateDiagram-v2
     - `feature/edit-statemachine-and-states` が統合され、StateMachineとState群の設計が一段落しました。
 
 14. `6a8c626` - `5f0310a`（2026-05-01）
-    - `GameState`、判定用モジュール、`TimerTextState`、`JudgeState` を追加しました。
+    - `GameState`、判定用モジュール、`JudgeState` を追加しました。
     - 不要Stateを削除し、`IState` から抽象クラス `State` へリファクタリングしました。
-    - `feature/add-judge-system` が統合され、勝敗判定とターン表示を含むローカル対戦ループが成立しました。
+    - `feature/add-judge-system` が統合され、勝敗判定を含むローカル対戦ループが成立しました。
 
 15. `0f0ea5a` - `f310bae`（2026-05-01）
     - `TitleScene` と `SceneLoader` を追加し、シーン遷移を開始しました。
