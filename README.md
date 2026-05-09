@@ -71,11 +71,12 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
 - `Assets/StateMachine/Script/State/ModeState.cs`
   - ゲームモードに応じて次の状態を決定します。
   - ローカルモードなら次の判定処理へ進みます。
-  - ネットワークモードなら `NetworkWaitState` へ遷移します。
+  - ネットワークモードなら自分の着手後のネットワーク勝敗判定へ遷移します。
 - `Assets/StateMachine/Script/State/NetworkWaitState.cs`
   - ネットワーク対戦時に相手の手を待つ状態です。
 - `Assets/StateMachine/Script/State/NetworkJudgeState.cs`
-  - ネットワーク対戦で勝敗判定を行い、続行なら次の進行先へ遷移します。
+  - ネットワーク対戦で勝敗判定を行います。
+  - README上では、入口と出口を分かりやすくするため「自分の着手後」と「相手の着手後」に分けて説明します。
 - `Assets/StateMachine/Script/State/EndState.cs`
   - 勝者表示を行う終了状態です。
 - `Assets/StateMachine/Script/State/SenteEntryState.cs`
@@ -139,17 +140,17 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
 - `ModeState`
   - 一手完了後に、ローカル対戦とネットワーク対戦の進行先を分岐します。
   - `Mode.Local` の場合は `JudgeState` へ遷移します。
-  - `Mode.Network` の場合は `NetworkJudgeState(nextState: NetworkTurnEndState)` へ遷移します。
+  - `Mode.Network` の場合は、自分の着手後のネットワーク勝敗判定へ遷移します。
 
 - `JudgeState`
   - ローカル対戦の勝敗判定状態です。
   - `context.judge.IsEnd(out winner)` が真なら `EndState` へ遷移します。
   - 続行する場合は `context.turn.ChangeTurn()` を実行し、`IdleState` へ遷移します。
 
-- `NetworkJudgeState`
-  - ネットワーク対戦の勝敗判定状態です。
-  - 終了条件を満たす場合は `EndState` へ遷移します。
-  - 続行する場合はターンを交代し、呼び出し元に応じて `NetworkTurnEndState` または `IdleState` へ遷移します。
+- `NetworkJudgeState`（自分の着手後）
+  - `ModeState` から入ります。
+  - ネットワーク対戦の勝敗判定を行い、終了条件を満たす場合は `EndState` へ遷移します。
+  - 続行する場合はターンを交代し、`NetworkTurnEndState` へ遷移します。
 
 - `NetworkTurnEndState`
   - 自分の手が完了したことをネットワーク側に通知する状態です。
@@ -158,8 +159,13 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
 - `NetworkWaitState`
   - 相手の手を待つ状態です。
   - `Enter()` で「待機中...」を表示し、`WaitForMoveCoroutine()` を開始します。
-  - `GetMoveSignal()` が変化し、かつ `GetLastMovedTeam()` が待機中のチームと一致したら相手の着手完了とみなし、`NetworkJudgeState(nextState: IdleState)` へ遷移します。
+  - `GetMoveSignal()` が変化し、かつ `GetLastMovedTeam()` が待機中のチームと一致したら相手の着手完了とみなし、相手の着手後のネットワーク勝敗判定へ遷移します。
   - 待機中は0.5秒ごとに `context.viewer.BuildAll()` で表示を更新します。
+
+- `NetworkJudgeState`（相手の着手後）
+  - `NetworkWaitState` から入ります。
+  - ネットワーク対戦の勝敗判定を行い、終了条件を満たす場合は `EndState` へ遷移します。
+  - 続行する場合はターンを交代し、自分の操作待ちである `IdleState` へ遷移します。
 
 - `EndState`
   - 対局終了状態です。
@@ -167,6 +173,8 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
   - クリックによる遷移はありません。
 
 ### 状態遷移図
+
+図中の `NetworkSelfJudgeState` と `NetworkOpponentJudgeState` は、`NetworkJudgeState` を入口別に分けた説明用の名前です。
 
 ```mermaid
 stateDiagram-v2
@@ -188,16 +196,17 @@ stateDiagram-v2
     SelectGoteState --> ModeState: 配置可能セルへ後手持ち駒を打つ
 
     ModeState --> JudgeState: Mode.Local
-    ModeState --> NetworkJudgeState: Mode.Network
+    ModeState --> NetworkSelfJudgeState: Mode.Network / 自分の着手後
 
     JudgeState --> EndState: 勝敗判定あり
     JudgeState --> IdleState: 続行、ターン交代
 
-    NetworkJudgeState --> EndState: 勝敗判定あり
-    NetworkJudgeState --> NetworkTurnEndState: 自分の手番へ続行
-    NetworkJudgeState --> IdleState: 相手の手番後に続行
+    NetworkSelfJudgeState --> EndState: 勝敗判定あり
+    NetworkSelfJudgeState --> NetworkTurnEndState: 続行、着手通知へ
     NetworkTurnEndState --> NetworkWaitState: 着手通知完了
-    NetworkWaitState --> NetworkJudgeState: 相手の着手を検出
+    NetworkWaitState --> NetworkOpponentJudgeState: 相手の着手を検出
+    NetworkOpponentJudgeState --> EndState: 勝敗判定あり
+    NetworkOpponentJudgeState --> IdleState: 続行、自分の操作へ
 ```
 
 ## 重要な設計ポイント
