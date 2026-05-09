@@ -1,3 +1,4 @@
+using UnityEngine;
 public class TurnModule
 {
     private Team currentTurn = Team.Sente;
@@ -11,6 +12,7 @@ public class TurnModule
     // ターン変更
     public void ChangeTurn()
     {
+        Debug.Log("Turnを変更しました");
         currentTurn = currentTurn == Team.Sente
             ? Team.Gote
             : Team.Sente;
