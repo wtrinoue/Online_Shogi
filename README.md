@@ -175,6 +175,12 @@ Online_ShogiはUnityで作られた将棋系オンラインボードゲームの
 ### 状態遷移図
 
 図中の `NetworkSelfJudgeState` と `NetworkOpponentJudgeState` は、`NetworkJudgeState` を入口別に分けた説明用の名前です。
+色は、共通の流れを青、ローカル特有の流れを緑、ネットワーク特有の流れをオレンジで示します。
+
+- 共通の流れは、起動、駒選択、着手完了、終了表示など、ローカル対戦とネットワーク対戦の両方で使う部分です。
+- ローカル特有の流れは、自分の端末内だけで勝敗判定を行い、そのまま次の手番へ戻る部分です。
+- ネットワーク特有の流れは、自分の着手後に勝敗判定と着手通知を行い、相手の着手を待ってから再び自分の操作へ戻る部分です。
+- `ModeState` でローカルとネットワークに分岐し、対局が続く場合はいずれも `IdleState` に戻ります。
 
 ```mermaid
 stateDiagram-v2
@@ -207,6 +213,14 @@ stateDiagram-v2
     NetworkWaitState --> NetworkOpponentJudgeState: 相手の着手を検出
     NetworkOpponentJudgeState --> EndState: 勝敗判定あり
     NetworkOpponentJudgeState --> IdleState: 続行、自分の操作へ
+
+    classDef common fill:#e7f0ff,stroke:#2f6fbd,color:#17365d
+    classDef local fill:#e8f7ed,stroke:#2f8f4e,color:#174c2a
+    classDef network fill:#fff2df,stroke:#d9822b,color:#5b3208
+
+    class EmptyState,SenteEntryState,IdleState,SelectBoardState,SelectSenteState,SelectGoteState,ModeState,EndState common
+    class JudgeState local
+    class GoteEntryState,NetworkSelfJudgeState,NetworkTurnEndState,NetworkWaitState,NetworkOpponentJudgeState network
 ```
 
 ## 重要な設計ポイント
