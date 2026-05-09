@@ -13,12 +13,7 @@ public class ModeState : State
         {
             case Mode.Local:
                 context.machine.ChangeState(
-                    new TimerTextState(
-                        context,
-                        $"{context.turn.GetCurrentTurn()}のターン",
-                        1f,
-                        new JudgeState(context)
-                    )
+                    new JudgeState(context)
                 );
                 break;
             case Mode.Network:

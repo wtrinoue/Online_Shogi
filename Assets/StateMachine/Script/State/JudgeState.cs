@@ -18,7 +18,14 @@ public class JudgeState : State
         else
         {
             context.turn.ChangeTurn();
-            context.machine.ChangeState(new IdleState(context));
+            context.machine.ChangeState(
+                    new TimerTextState(
+                        context,
+                        $"{context.turn.GetCurrentTurn()}のターン",
+                        1f,
+                        new IdleState(context)
+                    )
+            );
         }
     }
 

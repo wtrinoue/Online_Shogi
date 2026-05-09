@@ -35,7 +35,6 @@ public class StateMachine : MonoBehaviour
     public void Init()
     {
         context = new GameContext(this, gameManager, gameViewer, textManager, mode);
-        context.turn.SetTurn(Team.Sente);
         currentState = new SenteEntryState(context);
         currentState.Enter();
     }
