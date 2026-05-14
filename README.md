@@ -1,5 +1,6 @@
 # Online_Shogi
-
+## UnityRoomリンク
+https://unityroom.com/games/online-shogi
 ## プロジェクト概要
 
 Online_ShogiはUnityで作られた将棋系オンラインボードゲームのプロジェクトです。
